@@ -55,7 +55,7 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",
-    "@biomejs/biome": "2.5.10",
+    "@biomejs/biome": "2.6.2",
     "@terrazzo/parser": "^2.10.0",
     "@types/node": "^22.20.1",
     "culori": "^4.0.2",
