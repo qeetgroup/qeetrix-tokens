@@ -1,110 +1,677 @@
-# @qeetrix/tokens
+<div align="center">
 
-The design tokens of **Qeetrix**, the Qeet Group design system — colour, typography, spacing,
-radius, elevation, motion and density — for every Qeet product, on every platform.
+# 🎨 Qeetrix Tokens
 
-[![CI](https://github.com/qeetgroup/qeetrix-tokens/actions/workflows/ci.yml/badge.svg)](./.github/workflows/ci.yml)
+**The design tokens of Qeetrix, the Qeet Group design system.**
 
-> **Status — 0.0.3, the first published version.**
+Colour, typography, spacing, shape, elevation, motion and density come from one source in the
+[DTCG 2025.10](https://www.designtokens.org/) standard. They are published as CSS variables,
+standard DTCG JSON and typed JavaScript for every Qeet product on web, iOS and Android.
 
-## What's inside
+[![npm](https://img.shields.io/npm/v/@qeetrix/tokens?style=flat-square&color=111111&label=npm)](https://www.npmjs.com/package/@qeetrix/tokens)
+[![CI](https://img.shields.io/github/actions/workflow/status/qeetgroup/qeetrix-tokens/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/qeetgroup/qeetrix-tokens/actions/workflows/ci.yml)
+![DTCG](https://img.shields.io/badge/DTCG-2025.10-111111?style=flat-square)
+![WCAG](https://img.shields.io/badge/WCAG_2.2-AA-2E7D32?style=flat-square)
+![Dependencies](https://img.shields.io/badge/dependencies-0-2E7D32?style=flat-square)
+![Provenance](https://img.shields.io/badge/npm-provenance-111111?style=flat-square&logo=npm&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-typed-3178C6?style=flat-square&logo=typescript&logoColor=white)
+[![License](https://img.shields.io/badge/license-MIT-111111?style=flat-square)](LICENSE)
 
-One source of truth in the [DTCG 2025.10](https://www.designtokens.org/) standard, one output per
-kind of consumer:
+**[Quick start](#-quick-start)** · **[Token reference](#-token-reference)** ·
+**[Themes](#-colour-scheme-and-density)** · **[Tenant brand](#-a-tenants-brand-colour)** ·
+**[iOS, Android, Figma](#-ios-android-and-figma)** · **[How it's built](#%EF%B8%8F-how-it-is-built)**
 
-| Import | For | Contains |
-|---|---|---|
-| `@qeetrix/tokens/tokens.css` | Web apps — React, Angular, Vue, plain HTML | CSS variables for every mode. No raw palette values |
-| `@qeetrix/tokens/dtcg/light.tokens.json`<br>`@qeetrix/tokens/dtcg/dark.tokens.json` | iOS, Android, Figma, docs sites | Every token, resolved for one colour scheme |
-| `@qeetrix/tokens/dtcg/qeetrix.resolver.json` | Tools that read DTCG resolvers | The source and its modes (colour scheme × density), as published |
-| `@qeetrix/tokens` | JavaScript | `DURATION`, `EASING`, `SPRING`, `ICON_SIZE`, `ICON_STROKE`, `BREAKPOINT`, `COMPONENT`, and `brandTheme()` |
-
-## Install
-
-```bash
-bun add @qeetrix/tokens@0.0.3 --exact
-```
-
-Pin the exact version while the package is `0.x`: npm treats every `0.0.x` release as potentially
-breaking, so `^0.0.3` never picks up `0.0.4` on its own.
-
-## Web
+</div>
 
 ```css
-@import "@qeetrix/tokens/tokens.css";
+@import "@qeetrix/tokens";
 
-.panel {
+.card {
   background: var(--qx-color-surface-raised);
-  box-shadow: var(--qx-shadow-raised);
   color: var(--qx-color-text-default);
+  border: var(--qx-border-width-default) solid var(--qx-color-border-default);
   border-radius: var(--qx-radius-surface);
+  box-shadow: var(--qx-shadow-raised);
   padding: var(--qx-space-inset-lg);
   font: var(--qx-typography-body-md);
 }
 ```
 
-- **Colour scheme** — `data-qx-color-scheme="dark"` (or `"light"`) on `<html>` or on any subtree.
-- **Density** — `data-qx-density="compact"`, `"comfortable"` or `"default"` on any element.
-- **Breakpoints** — `@custom-media --qx-viewport-medium | expanded | large | xlarge` (600 / 840 /
-  1200 / 1600px, the same window size classes as Android). Needs a CSS build step that understands
-  `@custom-media` (Lightning CSS, PostCSS, Tailwind v4).
-- **Reduced motion** — every duration collapses to 0ms under `prefers-reduced-motion: reduce`.
-- The stylesheet is self-contained: no Tailwind or other stylesheet is needed behind it.
+---
 
-## JavaScript
+## 📑 Contents
 
-```ts
-import { DURATION, EASING, BREAKPOINT } from "@qeetrix/tokens";
+- [✨ Why Qeetrix Tokens](#-why-qeetrix-tokens)
+- [📊 At a glance](#-at-a-glance)
+- [📦 Installation](#-installation)
+- [🚀 Quick start](#-quick-start)
+- [🌗 Colour scheme and density](#-colour-scheme-and-density)
+- [🧭 What's in the package](#-whats-in-the-package)
+- [🎨 Token reference](#-token-reference)
+- [🏷️ Naming](#%EF%B8%8F-naming)
+- [🟠 Palette](#-palette)
+- [📈 Data visualisation](#-data-visualisation)
+- [🏢 A tenant's brand colour](#-a-tenants-brand-colour)
+- [⚡ JavaScript](#-javascript)
+- [📱 iOS, Android and Figma](#-ios-android-and-figma)
+- [🏗️ How it is built](#%EF%B8%8F-how-it-is-built)
+- [✅ Quality](#-quality)
+- [🧱 Versioning](#-versioning)
+- [🧩 The Qeetrix family](#-the-qeetrix-family)
+- [🛠️ Development](#%EF%B8%8F-development)
+- [⚖️ License](#%EF%B8%8F-license)
 
-element.animate(keyframes, { duration: DURATION.normal, easing: EASING.enter });
-const wide = matchMedia(`(width >= ${BREAKPOINT.expanded}px)`).matches;
+---
+
+## ✨ Why Qeetrix Tokens
+
+- **One source, every platform.** The tokens that style a web console also style the iOS and
+  Android apps and the Figma library. A change in this repository reaches all of them.
+- **An open standard.** The source is strict [DTCG 2025.10](https://www.designtokens.org/),
+  validated by [Terrazzo](https://terrazzo.app/). Any DTCG tool can read it.
+- **Accessible by construction.** Every designed colour pairing meets WCAG 2.2 AA in both colour
+  schemes. A test checks this on every change.
+- **Themes without JavaScript.** Light and dark, plus three densities, are data attributes. Any
+  subtree can switch, and no class names or rebuilds are needed.
+- **Meaning, not paint.** Products use roles such as `--qx-color-bg-danger-bold`. Raw palette
+  values are not in the stylesheet at all, so they can't leak into product code.
+- **Safe white-labelling.** `brandTheme()` turns a customer's colour into the brand tokens, with
+  AA contrast guaranteed for any input.
+- **Charts for everyone.** A dedicated categorical palette stays distinguishable under
+  deuteranopia, protanopia and tritanopia.
+- **Small and trustworthy.** No runtime dependencies, ESM, fully typed, and published with npm
+  provenance from GitHub Actions.
+
+## 📊 At a glance
+
+<div align="center">
+
+| 🎯 209 tokens | 🌗 2 colour schemes | 📏 3 densities | ♿ WCAG 2.2 AA | 📦 0 dependencies |
+|:---:|:---:|:---:|:---:|:---:|
+| semantic + component | light · dark | default · comfortable · compact | every pairing, tested | about 38 kB packed |
+
+</div>
+
+## 📦 Installation
+
+```bash
+bun add @qeetrix/tokens
 ```
 
-## iOS, Android, Figma and docs sites
+```bash
+npm install @qeetrix/tokens
+```
 
-Read `dtcg/<scheme>.tokens.json` — a standard DTCG 2025.10 document — or run the resolver for any
-combination of modes. Colours are `{ "colorSpace": "oklch", "components": [L, C, H], "hex" }`;
-lengths are `{ "value", "unit": "px" | "rem" }`; references between tokens are kept, so the
-primitive → semantic relationships survive into Figma Variables. Native motion uses
-`motion.spring.*` (Compose stiffness and damping ratio).
+**Requirements:** ESM only, Node 20+ or any modern bundler. The stylesheet works in every
+evergreen browser. The font files are not included: load **Qeet Sans** and **Fira Code** in your
+app. Each font stack falls back to the system fonts.
 
-## How the tokens are organised
+## 🚀 Quick start
 
-| Tier | Holds | Example |
+**1. Import the stylesheet once**, at the root of your app:
+
+```css
+@import "@qeetrix/tokens";
+```
+
+In a CSS file, the package name is enough. CSS tools (Tailwind, Vite, webpack, PostCSS) pick
+the stylesheet, and JavaScript tools pick the JS exports. **To import the stylesheet from a
+JavaScript file**, such as a Next.js root layout, use the full path, because there the package
+name means the JS module:
+
+```ts
+import "@qeetrix/tokens/tokens.css";
+```
+
+**2. Style with semantic tokens.** Every variable starts with `--qx-`:
+
+```css
+.button-primary {
+  height: var(--qx-size-control-md);
+  padding-inline: var(--qx-space-inset-md);
+  border-radius: var(--qx-radius-control);
+  background: var(--qx-color-bg-brand-bold);
+  color: var(--qx-color-text-on-brand);
+  font: var(--qx-typography-label-md);
+  transition: background var(--qx-motion-duration-fast) var(--qx-motion-easing-standard);
+}
+.button-primary:hover  { background: var(--qx-color-bg-brand-bold-hover); }
+.button-primary:active { background: var(--qx-color-bg-brand-bold-pressed); }
+.button-primary:focus-visible {
+  outline: var(--qx-focus-ring-width) solid var(--qx-color-border-focus);
+  outline-offset: var(--qx-focus-ring-offset);
+}
+```
+
+**3. Choose a colour scheme and density** on `<html>`, or on any element:
+
+```html
+<html data-qx-color-scheme="dark" data-qx-density="compact">
+```
+
+Using Tailwind CSS v4? `@qeetrix/react` will ship the full Tailwind mapping. Until then, use the
+variables directly: `bg-(--qx-color-surface-raised)`.
+
+## 🌗 Colour scheme and density
+
+| Attribute | Values | Default |
 |---|---|---|
-| Primitive | Raw palettes and scales — private, never published as CSS | `primitive.color.qeet.600` |
-| Semantic | Meaning — the API products use | `color.bg.brand.bold`, `color.text.subtle`, `radius.control` |
-| Component | The few component decisions with no semantic equivalent | `component.sidebar.width.expanded` |
+| `data-qx-color-scheme` | `light` · `dark` | `light` |
+| `data-qx-density` | `default` · `comfortable` · `compact` | `default` |
 
-Names follow one pattern: `{category}.{property}.{role}.{emphasis}-{state}` —
-`color.bg.brand.bold-hover`, `color.text.subtle`, `color.border.focus`. Emphasis is `subtle` or
-`bold`; states are `hover`, `pressed`, `selected`, `disabled`. Text and icon colours are separate:
-text must reach 4.5:1, icons 3:1.
+The two modes are independent, so all six combinations work. Both attributes apply to the subtree
+they are set on. A dark sidebar inside a light page, or a compact data table inside a default form,
+needs only one attribute:
 
-**One palette for every product**: graphite (neutrals), qeet (the brand) and red, green, amber and
-blue for status. Brand is a semantic role (`color.bg.brand.bold`, `color.text.brand`, …), not a
-separate palette. Charts use a dedicated categorical palette designed for colour-blind readers.
+```html
+<body>
+  <aside data-qx-color-scheme="dark">…</aside>
+  <main>
+    <table data-qx-density="compact">…</table>
+  </main>
+</body>
+```
 
-## A tenant's brand colour
+The stylesheet does not follow the OS colour scheme on its own; that is your app's choice. Each
+scheme block also sets the CSS `color-scheme` property, so scrollbars and form controls match. To
+follow the OS:
 
-A customer's own surface — a hosted sign-in page, a checkout — may show the customer's colour.
-`brandTheme()` turns one colour into every brand token, for both schemes, with WCAG AA guaranteed:
+```js
+const prefersDark = matchMedia("(prefers-color-scheme: dark)");
+const apply = () => {
+  document.documentElement.dataset.qxColorScheme = prefersDark.matches ? "dark" : "light";
+};
+apply();
+prefersDark.addEventListener("change", apply);
+```
+
+**Density** changes only five tokens. Everything else keeps its size:
+
+| Token | compact | default | comfortable |
+|---|:---:|:---:|:---:|
+| `--qx-size-control-sm` | 24px | 28px | 32px |
+| `--qx-size-control-md` | 28px | 32px | 36px |
+| `--qx-size-control-lg` | 32px | 40px | 44px |
+| `--qx-size-row` | 32px | 40px | 48px |
+| `--qx-space-form-gap` | 12px | 16px | 20px |
+
+`compact` never goes below the 24px minimum target size (WCAG 2.2, 2.5.8).
+
+**Reduced motion.** Under `prefers-reduced-motion: reduce`, every `--qx-motion-duration-*`
+becomes `0ms`, so transitions built on the tokens stop by themselves.
+
+## 🧭 What's in the package
+
+| Import | For | Contains |
+|---|---|---|
+| `@import "@qeetrix/tokens"` (in CSS)<br>`import "@qeetrix/tokens/tokens.css"` (in JS) | Web: React, Angular, Vue, plain HTML | Every public token as a CSS variable, one block per mode, `@custom-media` breakpoints |
+| `@qeetrix/tokens` | JavaScript and TypeScript | `DURATION`, `EASING`, `SPRING`, `ICON_SIZE`, `ICON_STROKE`, `BREAKPOINT`, `COMPONENT`, `brandTheme()`, `TENANT_TOKENS` |
+| `@qeetrix/tokens/dtcg/light.tokens.json`<br>`@qeetrix/tokens/dtcg/dark.tokens.json` | iOS, Android, Figma, docs sites | Every token for one colour scheme at default density, as standard DTCG |
+| `@qeetrix/tokens/dtcg/qeetrix.resolver.json` | DTCG resolver tools | The source and its modes (colour scheme × density), exactly as authored |
+
+## 🎨 Token reference
+
+Each table below lists CSS variables. The DTCG name is the same path with dots, for example
+`--qx-color-bg-brand-bold` is `color.bg.brand.bold`.
+
+### Colour
+
+| Group | What it is for | Examples |
+|---|---|---|
+| `color-bg-*` | Fills: buttons, badges, banners, selected rows | `bg-brand-bold`, `bg-danger-subtle`, `bg-neutral-subtle-hover` |
+| `color-text-*` | Text, at 4.5:1 or better | `text-default`, `text-subtle`, `text-link`, `text-on-brand` |
+| `color-icon-*` | Icons, at 3:1 or better | `icon-default`, `icon-success`, `icon-on-bold` |
+| `color-border-*` | Borders, dividers and the focus ring | `border-default`, `border-strong`, `border-focus` |
+| `color-surface-*` | The layers of a page | `surface-canvas`, `surface-raised`, `surface-overlay` |
+| `color-overlay-*` | Translucent layers | `overlay-hover`, `overlay-pressed`, `overlay-scrim` |
+| `color-dataviz-*` | Charts | `dataviz-categorical-1` … `8`, `dataviz-grid` |
+| `color-code-*` | Syntax highlighting | `code-keyword`, `code-string`, `code-comment` |
+
+Text and icons are separate roles. Text must reach 4.5:1 against its background, while icons and
+borders need 3:1. Fills come in two emphases, `subtle` (a tint) and `bold` (a solid colour). The
+interactive ones also have `-hover` and `-pressed` states.
+
+**Key colours**
+
+| Token | Light | Dark |
+|---|:---:|:---:|
+| `--qx-color-bg-brand-bold` | ![#d04800](https://img.shields.io/badge/%23d04800-d04800?style=flat-square) | ![#d04800](https://img.shields.io/badge/%23d04800-d04800?style=flat-square) |
+| `--qx-color-text-brand` | ![#b73d10](https://img.shields.io/badge/%23b73d10-b73d10?style=flat-square) | ![#f26d0e](https://img.shields.io/badge/%23f26d0e-f26d0e?style=flat-square) |
+| `--qx-color-text-default` | ![#0e0d0d](https://img.shields.io/badge/%230e0d0d-0e0d0d?style=flat-square) | ![#f3f1ef](https://img.shields.io/badge/%23f3f1ef-f3f1ef?style=flat-square) |
+| `--qx-color-text-subtle` | ![#484747](https://img.shields.io/badge/%23484747-484747?style=flat-square) | ![#d1cfce](https://img.shields.io/badge/%23d1cfce-d1cfce?style=flat-square) |
+| `--qx-color-surface-default` | ![#ffffff](https://img.shields.io/badge/%23ffffff-ffffff?style=flat-square) | ![#131312](https://img.shields.io/badge/%23131312-131312?style=flat-square) |
+| `--qx-color-surface-canvas` | ![#fbfaf9](https://img.shields.io/badge/%23fbfaf9-fbfaf9?style=flat-square) | ![#0e0d0d](https://img.shields.io/badge/%230e0d0d-0e0d0d?style=flat-square) |
+| `--qx-color-border-default` | ![#e3e1e0](https://img.shields.io/badge/%23e3e1e0-e3e1e0?style=flat-square) | ![#262625](https://img.shields.io/badge/%23262625-262625?style=flat-square) |
+| `--qx-color-bg-danger-bold` | ![#be2334](https://img.shields.io/badge/%23be2334-be2334?style=flat-square) | ![#be2334](https://img.shields.io/badge/%23be2334-be2334?style=flat-square) |
+| `--qx-color-bg-success-bold` | ![#017e51](https://img.shields.io/badge/%23017e51-017e51?style=flat-square) | ![#017e51](https://img.shields.io/badge/%23017e51-017e51?style=flat-square) |
+| `--qx-color-bg-warning-bold` | ![#efad1d](https://img.shields.io/badge/%23efad1d-efad1d?style=flat-square) | ![#efad1d](https://img.shields.io/badge/%23efad1d-efad1d?style=flat-square) |
+| `--qx-color-bg-info-bold` | ![#006db4](https://img.shields.io/badge/%23006db4-006db4?style=flat-square) | ![#006db4](https://img.shields.io/badge/%23006db4-006db4?style=flat-square) |
+
+<details>
+<summary><b>Every colour token</b></summary>
+
+<br>
+
+| Group | Tokens (after `--qx-color-`) |
+|---|---|
+| Fills | `bg-neutral-subtle` `-hover` `-pressed` · `bg-neutral-bold` `-hover` `-pressed` · `bg-brand-subtle` `-hover` `-pressed` · `bg-brand-bold` `-hover` `-pressed` · `bg-danger-subtle` · `bg-danger-bold` `-hover` `-pressed` · `bg-success-subtle` · `bg-success-bold` · `bg-warning-subtle` · `bg-warning-bold` · `bg-info-subtle` · `bg-info-bold` · `bg-selected` `-hover` · `bg-disabled` · `bg-input` |
+| Text | `text-default` · `text-subtle` · `text-subtlest` · `text-disabled` · `text-inverse` · `text-brand` · `text-link` `-hover` · `text-danger` · `text-success` · `text-warning` · `text-info` · `text-on-bold` · `text-on-brand` · `text-on-warning` |
+| Icons | `icon-default` · `icon-subtle` · `icon-disabled` · `icon-inverse` · `icon-brand` · `icon-danger` · `icon-success` · `icon-warning` · `icon-info` · `icon-highlight` · `icon-on-bold` · `icon-on-brand` |
+| Borders | `border-default` · `border-subtle` · `border-strong` `-hover` · `border-disabled` · `border-focus` · `border-selected` · `border-brand` · `border-danger` · `border-success` · `border-warning` · `border-info` |
+| Surfaces | `surface-canvas` · `surface-default` · `surface-raised` · `surface-overlay` · `surface-sunken` · `surface-inverse` |
+| Overlays | `overlay-hover` · `overlay-pressed` · `overlay-scrim` · `selection` |
+| Charts | `dataviz-categorical-1` … `8` · `dataviz-sequential-1` … `7` · `dataviz-diverging-1` … `7` · `dataviz-positive` · `dataviz-negative` · `dataviz-warning` · `dataviz-axis` · `dataviz-grid` · `dataviz-reference` |
+| Code | `code-keyword` · `code-string` · `code-number` · `code-literal` · `code-comment` · `code-punctuation` |
+
+</details>
+
+### Typography
+
+`--qx-typography-<role>-<size>` is a complete `font` shorthand. Each part is also available on its
+own as `-font-family`, `-font-size`, `-font-weight`, `-line-height` and `-letter-spacing`.
+
+| Role | lg | md | sm | Weight | For |
+|---|:---:|:---:|:---:|:---:|---|
+| `display` | 56 / 64 | 48 / 56 | 40 / 48 | 600 | Hero and marketing headlines |
+| `heading` | 32 / 40 | 28 / 36 | 24 / 32 | 600 | Page and section headings |
+| `title` | 20 / 28 | 18 / 24 | 16 / 24 | 600 | Cards, dialogs, panels |
+| `body` | 16 / 24 | **14 / 20** | 12 / 16 | 400 | Running text; `md` is the interface base |
+| `label` | 16 / 24 | 14 / 20 | 12 / 16 | 500 | Buttons, inputs, tabs, menus |
+| `code` | — | 14 / 20 | 12 / 16 | 400 | Code, in Fira Code |
+
+Sizes are font size / line height in px, and every line height sits on the 4px grid. Sizes are
+published in `rem`, so they follow the user's browser font size. Headings use Qeet Sans's heading
+geometry (`--qx-font-geometry-heading`) and text uses its body geometry. `--qx-font-family-indic`
+is a Noto stack for Indian scripts.
+
+### Space
+
+| Token | xs | sm | md | lg | xl | For |
+|---|:---:|:---:|:---:|:---:|:---:|---|
+| `--qx-space-inset-*` | 4 | 8 | 12 | 16 | 24 | Padding inside a container |
+| `--qx-space-gap-*` | 4 | 8 | 12 | 16 | 24 | Space between siblings |
+| `--qx-space-layout-*` | — | 24 | 32 | 48 | 64 | Space between page sections |
+
+Values are px at the default font size, published in `rem` on a 4px grid. `--qx-space-form-gap`
+follows density.
+
+### Shape
+
+| Token | Value | For |
+|---|:---:|---|
+| `--qx-radius-none` | 0 | Square edges |
+| `--qx-radius-sm` | 4px | Checkboxes, inline code |
+| `--qx-radius-tooltip` | 6px | Tooltips |
+| `--qx-radius-control` | 8px | Buttons, inputs, selects: every control |
+| `--qx-radius-surface` | 12px | Cards, panels, containers |
+| `--qx-radius-overlay` | 12px | Menus, popovers |
+| `--qx-radius-modal` | 16px | Dialogs, sheets |
+| `--qx-radius-chip` · `--qx-radius-full` | pill | Chips, tags, badges, avatars |
+
+Borders: `--qx-border-width-default` (1px) and `--qx-border-width-strong` (2px). Focus ring:
+`--qx-focus-ring-width` and `--qx-focus-ring-offset` (2px each).
+
+### Elevation
+
+| Token | For |
+|---|---|
+| `--qx-shadow-raised` | Cards and other surfaces at rest |
+| `--qx-shadow-raised-hover` | A raised surface under the pointer |
+| `--qx-shadow-overlay` | Menus, popovers, dropdowns |
+| `--qx-shadow-modal` | Dialogs and sheets |
+| `--qx-shadow-inset` | Sunken wells |
+
+Shadows are neutral. Raised, overlay and modal pair a tight contact shadow with a soft ambient
+one. Each colour scheme has its own set.
+
+### Motion
+
+| Duration | ms | For |
+|---|:---:|---|
+| `--qx-motion-duration-instant` | 0 | No animation |
+| `--qx-motion-duration-fast` | 100 | Hover and press feedback |
+| `--qx-motion-duration-normal` | 200 | Tooltips, menus, toggles |
+| `--qx-motion-duration-slow` | 300 | Dialogs, drawers, sheets |
+| `--qx-motion-duration-slower` | 400 | Large or full-screen transitions |
+
+| Easing | Curve | For |
+|---|---|---|
+| `--qx-motion-easing-standard` | `cubic-bezier(0.65, 0, 0.35, 1)` | Something on screen changes size, position or colour |
+| `--qx-motion-easing-enter` | `cubic-bezier(0.25, 1, 0.5, 1)` | Something arrives and decelerates to rest |
+| `--qx-motion-easing-exit` | `cubic-bezier(0.32, 0, 0.67, 0)` | Something leaves and accelerates away |
+| `--qx-motion-easing-emphasized` | `cubic-bezier(0.16, 1, 0.3, 1)` | Large moves: drawers, page transitions |
+| `--qx-motion-easing-linear` | `linear` | Progress and other continuous motion |
+
+Native apps use springs: `motion.spring.snappy` (stiffness 400, damping ratio 0.9) and
+`motion.spring.gentle` (stiffness 200, damping ratio 1), with mass 1, as in Jetpack Compose.
+
+### Layers and layout
+
+| Z-index | | Breakpoint | Min width |
+|---|:---:|---|:---:|
+| `--qx-z-base` | 0 | *compact* | 0 |
+| `--qx-z-sticky` | 100 | `--qx-viewport-medium` | 600px |
+| `--qx-z-dropdown` | 1000 | `--qx-viewport-expanded` | 840px |
+| `--qx-z-overlay` | 1300 | `--qx-viewport-large` | 1200px |
+| `--qx-z-modal` | 1400 | `--qx-viewport-xlarge` | 1600px |
+| `--qx-z-popover` | 1500 | | |
+| `--qx-z-toast` | 1600 | | |
+| `--qx-z-tooltip` | 1700 | | |
+| `--qx-z-spotlight` | 1800 | | |
+| `--qx-z-skip-link` | 1900 | | |
+
+Breakpoints are the window size classes used on Android, and the same on web. They are published as
+`@custom-media`, because `var()` cannot be used inside a media query. That needs a CSS build step
+that understands custom media, such as Lightning CSS, PostCSS or Tailwind v4:
+
+```css
+@media (--qx-viewport-expanded) {
+  .layout { grid-template-columns: var(--qx-component-sidebar-width-expanded) 1fr; }
+}
+```
+
+### Sizes, icons and the rest
+
+| Token | Value |
+|---|---|
+| `--qx-size-control-sm` · `-md` · `-lg` | 28 · 32 · 40px (follow density) |
+| `--qx-size-row` | 40px (follows density) |
+| `--qx-size-target-min` | 24px, the smallest pointer target allowed |
+| `--qx-size-icon-xs` · `-sm` · `-md` · `-lg` | 14 · 16 · 20 · 24px |
+| `--qx-icon-stroke-thin` · `-regular` | 1.5 · 2 |
+| `--qx-opacity-disabled` | 0.4, for disabled content with no disabled colour (images) |
+| `--qx-component-*` | Eight reviewed component sizes: sidebar widths, command palette, timeline marker, tour |
+
+## 🏷️ Naming
+
+Every semantic token follows one pattern:
+
+```text
+color . bg . brand . bold - hover
+  │      │     │      │      └── state     hover · pressed · selected · disabled
+  │      │     │      └───────── emphasis  subtle · bold
+  │      │     └──────────────── role      neutral · brand · danger · success · warning · info
+  │      └────────────────────── property  bg · text · icon · border · surface
+  └───────────────────────────── category  color · space · size · radius · shadow · motion · …
+```
+
+Names describe **meaning, never appearance or mode**. There is no `orange-600` and no `dark-bg`.
+The same name holds the right value in light and dark, so code never needs to know which scheme is
+active.
+
+## 🟠 Palette
+
+There is **one palette for every Qeet product.** The palette is private: it lives in the DTCG files
+as `primitive.*` so that Figma and native apps can see how roles are built, but it is never
+published as CSS. Brand is a semantic role (`color.bg.brand.bold`, `color.text.brand`, …), not a
+separate palette.
+
+**Qeet**, the brand. 500 is the logo orange and 600 (Ember) is the action colour:
+
+![50](https://img.shields.io/badge/50-fff5ed?style=flat-square)
+![100](https://img.shields.io/badge/100-ffebdb?style=flat-square)
+![200](https://img.shields.io/badge/200-ffd7b9?style=flat-square)
+![300](https://img.shields.io/badge/300-ffba88?style=flat-square)
+![400](https://img.shields.io/badge/400-ff9646?style=flat-square)
+![500](https://img.shields.io/badge/500-f26d0e?style=flat-square)
+![600](https://img.shields.io/badge/600-d04800?style=flat-square)
+![700](https://img.shields.io/badge/700-b73d10?style=flat-square)
+![800](https://img.shields.io/badge/800-9b3314?style=flat-square)
+![900](https://img.shields.io/badge/900-7b2815?style=flat-square)
+![950](https://img.shields.io/badge/950-52170d?style=flat-square)
+
+**Graphite**, warm neutrals for text, surfaces and borders, with near-black dark mode:
+
+![0](https://img.shields.io/badge/0-ffffff?style=flat-square)
+![50](https://img.shields.io/badge/50-f8f6f5?style=flat-square)
+![200](https://img.shields.io/badge/200-e3e1e0?style=flat-square)
+![400](https://img.shields.io/badge/400-a6a4a3?style=flat-square)
+![500](https://img.shields.io/badge/500-767473?style=flat-square)
+![600](https://img.shields.io/badge/600-62605f?style=flat-square)
+![700](https://img.shields.io/badge/700-484747?style=flat-square)
+![800](https://img.shields.io/badge/800-2e2e2d?style=flat-square)
+![900](https://img.shields.io/badge/900-191818?style=flat-square)
+![950](https://img.shields.io/badge/950-0e0d0d?style=flat-square)
+![1000](https://img.shields.io/badge/1000-040404?style=flat-square)
+
+**Status** colours: danger, success, warning and info.
+
+| | 100 | 300 | 500 | 700 | 900 |
+|---|:---:|:---:|:---:|:---:|:---:|
+| Red | ![100](https://img.shields.io/badge/100-fee9e9?style=flat-square) | ![300](https://img.shields.io/badge/300-feb5b6?style=flat-square) | ![500](https://img.shields.io/badge/500-f13c50?style=flat-square) | ![700](https://img.shields.io/badge/700-be2334?style=flat-square) | ![900](https://img.shields.io/badge/900-791a20?style=flat-square) |
+| Green | ![100](https://img.shields.io/badge/100-ddf7e5?style=flat-square) | ![300](https://img.shields.io/badge/300-8fe0b0?style=flat-square) | ![500](https://img.shields.io/badge/500-20b375?style=flat-square) | ![700](https://img.shields.io/badge/700-017e51?style=flat-square) | ![900](https://img.shields.io/badge/900-005134?style=flat-square) |
+| Amber | ![100](https://img.shields.io/badge/100-f8efd4?style=flat-square) | ![300](https://img.shields.io/badge/300-e9c775?style=flat-square) | ![500](https://img.shields.io/badge/500-cb9605?style=flat-square) | ![700](https://img.shields.io/badge/700-8c6000?style=flat-square) | ![900](https://img.shields.io/badge/900-5d3b01?style=flat-square) |
+| Blue | ![100](https://img.shields.io/badge/100-e1f2fe?style=flat-square) | ![300](https://img.shields.io/badge/300-97d3ff?style=flat-square) | ![500](https://img.shields.io/badge/500-0393e6?style=flat-square) | ![700](https://img.shields.io/badge/700-006db4?style=flat-square) | ![900](https://img.shields.io/badge/900-104574?style=flat-square) |
+
+Every colour is authored in **OKLCH**, with its sRGB hex alongside, so steps look evenly spaced to
+the eye.
+
+## 📈 Data visualisation
+
+Charts use their own palette, not the interface colours, so a series never looks like an error or a
+button.
+
+**Categorical**, eight series in order:
+
+| | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| Light | ![1](https://img.shields.io/badge/1-105bbe?style=flat-square) | ![2](https://img.shields.io/badge/2-d76900?style=flat-square) | ![3](https://img.shields.io/badge/3-007976?style=flat-square) | ![4](https://img.shields.io/badge/4-9273d8?style=flat-square) | ![5](https://img.shields.io/badge/5-d15697?style=flat-square) | ![6](https://img.shields.io/badge/6-207e18?style=flat-square) | ![7](https://img.shields.io/badge/7-b68611?style=flat-square) | ![8](https://img.shields.io/badge/8-424e5e?style=flat-square) |
+| Dark | ![1](https://img.shields.io/badge/1-4e8ce6?style=flat-square) | ![2](https://img.shields.io/badge/2-ffaa75?style=flat-square) | ![3](https://img.shields.io/badge/3-02b5b2?style=flat-square) | ![4](https://img.shields.io/badge/4-c7b3ff?style=flat-square) | ![5](https://img.shields.io/badge/5-ffa9d2?style=flat-square) | ![6](https://img.shields.io/badge/6-63b55b?style=flat-square) | ![7](https://img.shields.io/badge/7-ffd077?style=flat-square) | ![8](https://img.shields.io/badge/8-748192?style=flat-square) |
+
+- Every series reaches **3:1 against every chart surface** in both schemes.
+- Neighbouring series stay apart under **deuteranopia, protanopia and tritanopia**, and so does any
+  pair among the first five. Use the first five when you can.
+- **Sequential** (`sequential-1` … `7`, blue) for ordered values and **diverging**
+  (`diverging-1` … `7`, red through graphite to blue) for values around a midpoint.
+- `positive`, `negative` and `warning` for trends, and `axis`, `grid` and `reference` for the chart
+  itself.
+
+## 🏢 A tenant's brand colour
+
+Qeet products share one palette. The one exception is a customer's own surface, such as a hosted
+sign-in page or a checkout, which may show the customer's colour. `brandTheme()` turns one hex
+colour into every brand token, for both schemes:
 
 ```ts
 import { brandTheme } from "@qeetrix/tokens";
 
-const { light, dark } = brandTheme("#1a73e8");
-Object.assign(document.documentElement.style, light);
+const { light, dark } = brandTheme("#1a73e8"); // the tenant's colour, from your settings
+
+const declarations = (vars: Record<string, string>) =>
+  Object.entries(vars).map(([name, value]) => `${name}: ${value};`).join(" ");
+
+// Render after tokens.css, on the server or the client.
+const css = `
+  :root, [data-qx-color-scheme="light"] { ${declarations(light)} }
+  [data-qx-color-scheme="dark"] { ${declarations(dark)} }
+`;
 ```
 
-It overrides exactly the tokens in `TENANT_TOKENS` — brand fills, brand text and links, brand
-icons and borders, the focus ring, selection — and nothing else.
+Put `css` in a `<style>` element. To set a single element instead, use
+`element.style.setProperty(name, value)` for each entry. CSS variables can't be set with
+`Object.assign(element.style, …)`.
 
-## Contributing
+**What you can rely on:**
 
-Rules, commands and what CI enforces are in [AGENTS.md](AGENTS.md). Security reports:
+- It changes **exactly the 18 tokens in `TENANT_TOKENS`**, and nothing else: brand fills and
+  their hover and pressed states, brand text and links, brand icons and borders, the focus ring,
+  selected fills and the text selection colour.
+- **WCAG AA is guaranteed for any input colour.**
+  - The label on a brand fill reaches 4.5:1. It is white, or near-black for a light colour, and a
+    mid-tone that suits neither is darkened until white works.
+  - Brand text and links reach 4.5:1, and icons, borders and the focus ring 3:1, on every surface.
+- **It is safe with untrusted input.** It accepts only `#rgb` or `#rrggbb` and throws a
+  `TypeError` for anything else. Every value it returns is a colour it computed itself, so the
+  output is safe to put in a style element.
+
+## ⚡ JavaScript
+
+For values that code needs: animation, media queries, native bridges and canvas.
+
+```ts
+import { BREAKPOINT, DURATION, EASING } from "@qeetrix/tokens";
+
+element.animate(keyframes, { duration: DURATION.normal, easing: EASING.enter });
+
+const isWide = matchMedia(`(width >= ${BREAKPOINT.expanded}px)`).matches;
+```
+
+| Export | Shape |
+|---|---|
+| `DURATION` | `{ instant: 0, fast: 100, normal: 200, slow: 300, slower: 400 }`, in ms |
+| `EASING` | `{ standard, enter, exit, emphasized, linear }`, as CSS timing functions |
+| `SPRING` | `{ snappy, gentle }`, each `{ stiffness, dampingRatio }` |
+| `ICON_SIZE` · `ICON_STROKE` | `{ xs: 14, sm: 16, md: 20, lg: 24 }` · `{ thin: 1.5, regular: 2 }` |
+| `BREAKPOINT` | `{ medium: 600, expanded: 840, large: 1200, xlarge: 1600 }`, in px |
+| `COMPONENT` | Sidebar, command palette, timeline and tour geometry, as CSS lengths |
+| `brandTheme(hex)` · `TENANT_TOKENS` | [A tenant's brand colour](#-a-tenants-brand-colour) |
+
+Every value is declared `as const`, so TypeScript knows the literal type: `DURATION.normal` has
+type `200`, not `number`. Colours are deliberately **not** exported to JavaScript. Use the CSS
+variables, so colour schemes and tenant themes keep working.
+
+## 📱 iOS, Android and Figma
+
+`dtcg/light.tokens.json` and `dtcg/dark.tokens.json` are standard DTCG 2025.10 documents. Each
+contains every token for one colour scheme at default density.
+
+- **Colours** are `{ "colorSpace": "oklch", "components": [L, C, H], "hex": "#rrggbb", "alpha" }`.
+- **Lengths** are `{ "value": 2, "unit": "rem" }` or `px`, and **durations** are
+  `{ "value": 200, "unit": "ms" }`.
+- **References are kept.** `color.bg.brand.bold` points to `{primitive.color.qeet.600}`, so the
+  link between primitive and semantic tokens survives into Figma Variables.
+
+```json
+"bg": {
+  "brand": {
+    "bold": { "$type": "color", "$value": "{primitive.color.qeet.600}" }
+  }
+}
+```
+
+To get final values, for example in a build script that generates Swift or Kotlin, follow the
+references:
+
+```js
+import light from "@qeetrix/tokens/dtcg/light.tokens.json" with { type: "json" };
+
+const at = (path) => path.split(".").reduce((node, key) => node[key], light);
+
+function resolve(path) {
+  let token = at(path);
+  while (typeof token.$value === "string" && token.$value.startsWith("{")) {
+    token = at(token.$value.slice(1, -1));
+  }
+  return token.$value;
+}
+
+resolve("color.bg.brand.bold").hex; // "#d04800"
+resolve("size.control.md");         // { value: 2, unit: "rem" }
+```
+
+For other density combinations, run `dtcg/qeetrix.resolver.json` through any DTCG resolver
+(Terrazzo, for example). Native motion uses `motion.spring.*`. Z-index is web-only, because native
+platforms stack views by hierarchy.
+
+## 🏗️ How it is built
+
+```text
+                 src/qeetrix.resolver.json
+                           │
+   ┌───────────────────────┼─────────────────────────────┐
+   │  foundation set        modifiers (independent)      │
+   │  primitive + semantic  colorScheme: light · dark    │
+   │  + component tokens    density: default ·           │
+   │                          comfortable · compact      │
+   └───────────────────────┬─────────────────────────────┘
+                           ▼
+          Terrazzo: parse and validate strict DTCG
+                           ▼
+               scripts/build.mjs (writers)
+           ┌───────────────┼──────────────────┐
+           ▼               ▼                  ▼
+     dist/tokens.css   dist/dtcg/*.json   dist/index.js + .d.ts
+                                          (+ src/brand.ts via tsc)
+```
+
+**Three tiers:**
+
+| Tier | Holds | Published as CSS? | Example |
+|---|---|:---:|---|
+| Primitive | Raw palettes and scales | No | `primitive.color.qeet.600` |
+| Semantic | Meaning: the API products use | Yes | `color.bg.brand.bold`, `radius.control` |
+| Component | The few decisions with no semantic equivalent (8, reviewed) | Yes | `component.sidebar.width.expanded` |
+
+- **Modes, not copies.** Light, dark and the densities are modifiers on one foundation. A mode
+  file holds only what that mode changes, so the stylesheet has `:root` plus one small block per
+  mode.
+- **Derived values are values.** Hover and pressed states and tints are stored as plain colours,
+  with the recipe that made them recorded in `$extensions`. `bun run derive` recomputes them.
+  Every platform reads the same final value, and none of them has to calculate it.
+- **Framework mappings live elsewhere.** Tailwind and shadcn names belong in `@qeetrix/react`,
+  so this package stays framework-neutral.
+
+## ✅ Quality
+
+Every pull request runs the same gate as a release: **build → typecheck → lint → test → package
+checks**.
+
+| Suite | Guarantees |
+|---|---|
+| `source` | Valid DTCG in every mode combination, independent modifiers, the naming pattern, tier rules, a description for every token (on the token or its group), no unused primitives, up-to-date derived values |
+| `contrast` | WCAG 2.2 AA for every designed colour pairing, in both schemes |
+| `dataviz` | Chart palette contrast and colour-blind separation |
+| `stylesheet` | Exact `:root` and mode blocks, no primitives, `@custom-media`, reduced motion |
+| `dtcg` | The published resolver and resolved documents parse again in Terrazzo |
+| `brand` | `brandTheme()` changes only the allowlist and meets AA for 180 sample colours |
+| `package` | Exports, files, JS values equal to the tokens, exact `.d.ts`, a stylesheet snapshot |
+
+The stylesheet snapshot means **every value change shows up in the pull request diff**. Package
+checks run [publint](https://publint.dev/) and [Are the Types Wrong?](https://arethetypeswrong.github.io/).
+Releases are published from GitHub Actions with **npm provenance**, and the GitHub Actions they use
+are pinned to commit SHAs.
+
+## 🧱 Versioning
+
+While the package is `0.x`:
+
+| Change | Release |
+|---|---|
+| A new token or output | patch (`0.0.x`) |
+| A changed value that keeps its meaning | patch, visible in the stylesheet snapshot |
+| A removed or renamed token, a changed meaning, or a changed output shape | minor (`0.x.0`) |
+
+Every release is listed in the [CHANGELOG](CHANGELOG.md) and on
+[GitHub Releases](https://github.com/qeetgroup/qeetrix-tokens/releases).
+
+## 🧩 The Qeetrix family
+
+| Package | What it is | Uses these tokens? |
+|---|---|---|
+| **`@qeetrix/tokens`** | Design tokens (this package) | — |
+| [`@qeetrix/react`](https://github.com/qeetgroup/qeetrix-react) | The next React component library, including the Tailwind and shadcn mapping | Yes (planned) |
+| [`@qeetrix/ui`](https://github.com/qeetgroup/qeetrix-ui) | The current React component library | No: it keeps its own tokens until it is retired |
+| [`@qeetrix/icons`](https://github.com/qeetgroup/qeetrix-icons) | Icons and the Qeet logos | No token dependency; its recommended sizes and strokes match `ICON_SIZE` and `ICON_STROKE` |
+
+## 🛠️ Development
+
+```bash
+bun install
+bun run build           # tokens → dist/tokens.css, dist/dtcg/, dist/index.{js,d.ts}
+bun run test            # rebuilds, then runs every suite
+bun run typecheck
+bun run lint            # Biome
+bun run check:package   # publint + Are the Types Wrong?
+bun run derive          # recompute derived colours after changing a palette
+```
+
+Rules, layout and what CI enforces are in [AGENTS.md](AGENTS.md). To report a vulnerability, see
 [SECURITY.md](SECURITY.md).
 
-## License
+**Releases.** Opening a pull request bumps the patch version on the branch. Merging to `main`
+publishes to npm with provenance, tags `vX.Y.Z` and opens a GitHub Release. `rollback.yml` moves
+`latest` back to an earlier version if a release goes wrong.
+
+## ⚖️ License
 
 [MIT](LICENSE) © Qeet Group

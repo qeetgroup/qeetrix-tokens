@@ -13,7 +13,7 @@ Plain ESM, bun, MIT. It holds **decisions, not components**.
 
 | Output | For |
 |---|---|
-| `dist/tokens.css` | every web app — React, Angular, Vue, plain HTML |
+| `dist/tokens.css` | every web app — React, Angular, Vue, plain HTML. CSS reaches it as `@import "@qeetrix/tokens"` (the `style` condition), JS as `@qeetrix/tokens/tokens.css` |
 | `dist/dtcg/` | iOS, Android, Figma, docs sites — the source + resolver, and one resolved document per colour scheme |
 | `dist/index.js` + `.d.ts` | JavaScript values (motion, icon sizes, breakpoints, geometry) and `brandTheme()` |
 

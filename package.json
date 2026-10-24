@@ -33,9 +33,11 @@
     "dist",
     "CHANGELOG.md"
   ],
+  "style": "./dist/tokens.css",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
+      "style": "./dist/tokens.css",
       "default": "./dist/index.js"
     },
     "./tokens.css": "./dist/tokens.css",
