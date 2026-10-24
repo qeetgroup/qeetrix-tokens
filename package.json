@@ -1,7 +1,7 @@
 {
   "name": "@qeetrix/tokens",
   "version": "0.0.5",
-  "description": "Qeetrix design tokens — colour, typography, spacing, radius, elevation, motion and density for every Qeet product, as CSS variables, standard DTCG files and typed JavaScript values.",
+  "description": "Qeetrix design tokens \u2014 colour, typography, spacing, radius, elevation, motion and density for every Qeet product, as CSS variables, standard DTCG files and typed JavaScript values.",
   "keywords": [
     "design-tokens",
     "design-system",
@@ -41,6 +41,7 @@
       "default": "./dist/index.js"
     },
     "./tokens.css": "./dist/tokens.css",
+    "./fonts/*": "./dist/fonts/*",
     "./dtcg/*": "./dist/dtcg/*",
     "./package.json": "./package.json"
   },
@@ -52,7 +53,7 @@
     "format": "biome check --write .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "check:package": "publint --strict && attw --pack . --profile esm-only --exclude-entrypoints ./tokens.css",
+    "check:package": "publint --strict && attw --pack . --profile esm-only --exclude-entrypoints ./tokens.css ./fonts/*",
     "prepack": "bun run build"
   },
   "devDependencies": {

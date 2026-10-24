@@ -1,5 +1,18 @@
 # @qeetrix/tokens
 
+## 0.0.6
+
+- **The fonts ship with the tokens.** `tokens.css` now opens with `@font-face` rules for **Qeet Sans**
+  (Cal Sans, unmodified variable font) and **Fira Code**, so `@import "@qeetrix/tokens"` alone loads
+  the typefaces the tokens name. A file downloads only when text uses its family. The files and their
+  SIL Open Font Licences are at `@qeetrix/tokens/fonts/*`. Previously the fonts existed only inside
+  `@qeetrix/ui`.
+- **Tests:** every declared face points at a shipped file; each font ships with its licence; the
+  family names match the tokens' font stacks.
+- **Fixed:** `scripts/npm-versions.mjs` encodes the registry URL fully and validates the package name
+  before any request (found by CodeQL in `qeetrix-react`).
+- `qeet-repo.yml` reads the version from `package.json` instead of repeating it.
+
 ## 0.0.5
 
 Qeetrix's design language is now **structured and square**: direction C of the design-language
