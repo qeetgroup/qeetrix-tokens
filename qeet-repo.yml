@@ -1,0 +1,93 @@
+# qeetrix-tokens — repository context metadata (Level 2).
+# Inherits qeetgroup/qeet-context (L0). The Qeetrix product context (L1) does not exist yet.
+
+schema_version: 1
+
+context: {type: repository, level: L2, canonical: true, last_verified: "2026-10-24"}
+
+inheritance:
+  organization: {repository: qeetgroup/qeet-context, level: L0}
+  product:      null          # Qeetrix L1 context is planned (qeet-context LLM-STANDARD.md, Phase 2)
+
+repository:
+  name: qeetrix-tokens
+  product: qeetrix
+  type: library
+  role: primary
+  status: development         # not yet published
+  visibility: public
+  default_branch: main
+  production_branch: main
+
+package:
+  name: "@qeetrix/tokens"
+  version: 0.0.1
+  registry: registry.npmjs.org
+  access: public
+  license: MIT
+  module: esm-only
+  runtime_dependencies: none
+  side_effects: ["**/*.css"]
+  exports:
+    ".": dist/index.js                 # DURATION, EASING, SPRING, ICON_SIZE, ICON_STROKE, BREAKPOINT, COMPONENT, brandTheme, TENANT_TOKENS
+    "./tokens.css": dist/tokens.css    # :root + one block per mode; no primitives; breakpoints as @custom-media
+    "./dtcg/*": dist/dtcg/*            # qeetrix.resolver.json + tokens/** (the source), light/dark.tokens.json (resolved)
+
+source:
+  format: dtcg-2025.10               # strict: colour objects (oklch + hex), {value, unit} lengths, no CSS
+  resolver: src/qeetrix.resolver.json
+  modifiers: {colorScheme: [light, dark], density: [default, comfortable, compact]}   # orthogonal
+  parser: "@terrazzo/parser ^2.10"   # validates the standard; the writers are scripts/build.mjs + scripts/lib/
+  derived_values: "plain values + recipe in $extensions; `bun run derive` rewrites them"
+
+architecture:
+  tiers: [primitive, semantic, component]   # primitives private; component tier is a reviewed list (8 tokens)
+  naming: "{category}.{property}.{role}.{emphasis}-{state}"
+  palettes:
+    interface: [graphite, qeet, red, green, amber, blue]   # one palette for every Qeet product
+    dataviz: "designed categorical palette (8), sequential (blue), diverging (red–graphite–blue)"
+  brand: semantic-role                 # no brand alias ramp; no per-product brand colours
+  tenant_override: "brandTheme(hex) sets exactly TENANT_TOKENS (18), WCAG AA for any input"
+  framework_mappings: "none — the Tailwind/shadcn mapping lives in qeetrix-react"
+
+runtime:
+  language: TypeScript (src/brand.ts) + ESM build scripts
+  package_manager: bun@1.3.14
+  node: ">=20"
+
+contracts:
+  consumed_by: [qeetrix-react]                              # planned
+  token_consumers_planned: [qeetrix-ios, qeetrix-android]   # today they read @qeetrix/ui's tokens.json
+  not_consumed_by: [qeetrix-ui]                             # keeps its own token set until retired
+
+commands:
+  install: bun install
+  build: bun run build
+  derive: bun run derive
+  typecheck: bun run typecheck
+  lint: bun run lint
+  format: bun run format
+  test: bun run test
+  package_checks: bun run check:package
+
+ci:
+  workflows: [ci.yml, version.yml, release.yml, rollback.yml]
+  job: verify                 # build, typecheck, lint, test, check:package
+  versioning: "version.yml bumps PATCH on every PR unless package.json was raised by hand"
+  release: "push main -> gate (same as CI) -> npm publish (provenance) -> tag vX.Y.Z + GitHub release"
+  rollback: "rollback.yml moves the latest dist-tag"
+  dependency_updates: .github/dependabot.yml (bun, github-actions; 3-day cooldown)
+  actions_pinned_to_sha: true
+
+tests:
+  - source      # DTCG validity in every mode, orthogonal modifiers, naming, layering, descriptions, unused primitives, derived recipes
+  - contrast    # WCAG 2.2 AA for every designed pairing, both schemes
+  - dataviz     # chart palette contrast + colour-blind separation
+  - stylesheet  # :root and mode blocks exact, no primitives, @custom-media, reduced motion
+  - dtcg        # published resolver and resolved documents re-parse in Terrazzo
+  - brand       # brandTheme: allowlist only, AA for 180 seeds, matches the token values
+  - package     # exports, files, JS values = tokens, exact .d.ts, stylesheet snapshot
+
+llm_context:
+  primary_instructions: AGENTS.md
+  adapters: [CLAUDE.md, GEMINI.md, .github/copilot-instructions.md]
