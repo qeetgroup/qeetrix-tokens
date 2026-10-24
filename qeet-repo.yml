@@ -29,7 +29,7 @@ package:
   runtime_dependencies: none
   side_effects: ["**/*.css"]
   exports:
-    ".": dist/index.js                 # DURATION, EASING, SPRING, ICON_SIZE, ICON_STROKE, BREAKPOINT, COMPONENT, brandTheme, TENANT_TOKENS
+    ".": {style: dist/tokens.css, default: dist/index.js}   # CSS @import "@qeetrix/tokens" gets the stylesheet; JS gets DURATION, EASING, SPRING, ICON_SIZE, ICON_STROKE, BREAKPOINT, COMPONENT, brandTheme, TENANT_TOKENS
     "./tokens.css": dist/tokens.css    # :root + one block per mode; no primitives; breakpoints as @custom-media
     "./dtcg/*": dist/dtcg/*            # qeetrix.resolver.json + tokens/** (the source), light/dark.tokens.json (resolved)
 

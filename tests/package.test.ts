@@ -34,6 +34,15 @@ describe("package", () => {
     expect(missing).toEqual([]);
   });
 
+  it("serves the stylesheet to CSS tools at the package root, and JavaScript to everything else", () => {
+    // `@import "@qeetrix/tokens"` resolves through the `style` condition (Tailwind, Vite, webpack)
+    // or the top-level `style` field (postcss-import). Conditions match in key order, so `style`
+    // must come before `default`.
+    expect(Object.keys(pkg.exports["."])).toEqual(["types", "style", "default"]);
+    expect(pkg.exports["."].style).toBe(pkg.exports["./tokens.css"]);
+    expect(pkg.style).toBe(pkg.exports["./tokens.css"]);
+  });
+
   it("keeps src/ to authored files — nothing generated is written there", () => {
     expect(readdirSync(join(root, "src")).sort()).toEqual([
       "brand.ts",

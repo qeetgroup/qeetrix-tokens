@@ -1,5 +1,16 @@
 # @qeetrix/tokens
 
+## 0.0.4
+
+- **`@import "@qeetrix/tokens"` in CSS.** The package root now serves the stylesheet to CSS tools
+  through the `style` export condition (Tailwind, Vite, webpack) and the `style` field
+  (postcss-import), and the JS exports to everything else. `@qeetrix/tokens/tokens.css` still
+  works, and is the path to use when a JavaScript file imports the stylesheet.
+- **README rewritten**: a full token reference with swatches, themes, tenant branding, native and
+  Figma use, architecture and quality.
+- **Fixed** the tenant-theme example in the docs: CSS variables must be set with
+  `style.setProperty`, not `Object.assign(element.style, …)`.
+
 ## 0.0.3
 
 The first published version. (0.0.1 and 0.0.2 were used by an earlier package of the same name and

@@ -12,10 +12,11 @@
  *   - brand text and links reach 4.5:1, and icons, borders and the focus ring 3:1, on every surface
  *     of the scheme they are for.
  *
- * Apply the result as CSS variables on the tenant's subtree:
+ * Apply the result as CSS variables on the tenant's subtree — with setProperty, because custom
+ * properties can't be assigned as style fields:
  *
  *   const { light, dark } = brandTheme("#1a73e8");
- *   Object.assign(lightRoot.style, light);
+ *   for (const [name, value] of Object.entries(light)) lightRoot.style.setProperty(name, value);
  *
  * No dependencies: the colour maths (OKLab/OKLCH, sRGB, WCAG relative luminance) is below.
  */
