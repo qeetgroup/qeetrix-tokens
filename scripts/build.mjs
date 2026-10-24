@@ -48,6 +48,25 @@ const block = (selector, lines) => `${selector} {\n${lines.map((l) => `  ${l}`).
 const declare = (set, ids) =>
   ids.flatMap((id) => declarationsFor(set[id])).map(([name, value]) => `${name}: ${value};`);
 
+// ---- fonts ---------------------------------------------------------------------
+// The two typefaces the tokens name, as variable fonts, unmodified, with their SIL Open Font
+// Licences: Qeet Sans is Cal Sans (github.com/calcom/sans; wght 400–700, opsz 8–45, GEOM 0–100,
+// ital 0–1) and Fira Code (wght 300–700). The @font-face rules open tokens.css, so the one import
+// brings the fonts too; a browser downloads a file only when text uses that family. The GEOM letter
+// style is set per role by components (--qx-font-geometry-*), not here: Safari ignores the
+// font-variation-settings descriptor, so one file cannot carry several styles.
+cpSync(fileURLToPath(new URL("fonts/", SRC)), `${OUT}fonts`, { recursive: true });
+const fontFaces = [
+  ["Qeet Sans", "QeetSans.woff2", "400 700", "normal"],
+  ["Qeet Sans", "QeetSans.woff2", "400 700", "italic"],
+  ["Fira Code", "FiraCode-VF.woff2", "300 700", "normal"],
+]
+  .map(
+    ([family, file, weight, style]) =>
+      `@font-face {\n  font-family: "${family}";\n  src: url("./fonts/${file}") format("woff2");\n  font-weight: ${weight};\n  font-style: ${style};\n  font-display: swap;${style === "italic" ? '\n  font-variation-settings: "ital" 1;' : ""}\n}`,
+  )
+  .join("\n");
+
 // ---- dist/tokens.css --------------------------------------------------------
 
 // Breakpoints are published as @custom-media, not variables: var() cannot be used in a media query.
@@ -63,9 +82,11 @@ const sections = [
     " * edit src/tokens/** in qeetrix-tokens and run `bun run build`.",
     " *",
     " * :root holds the default modes. Set data-qx-color-scheme and data-qx-density on any element to",
-    " * switch a subtree.",
+    " * switch a subtree. The fonts (Qeet Sans, Fira Code; SIL Open Font Licence 1.1, dist/fonts/) load",
+    " * only when text uses them.",
     " */",
   ].join("\n"),
+  fontFaces,
   sortedIds(base)
     .filter((id) => id.startsWith("breakpoint."))
     .sort((a, b) => base[a].$value.value - base[b].$value.value)
@@ -219,5 +240,5 @@ writeFileSync(`${OUT}index.js`, render(false));
 writeFileSync(`${OUT}index.d.ts`, render(true));
 
 console.log(
-  `✔ Qeetrix tokens built — ${publicIds.length} public tokens → dist/tokens.css, dist/dtcg/, dist/index.{js,d.ts}`,
+  `✔ Qeetrix tokens built — ${publicIds.length} public tokens → dist/tokens.css, dist/dtcg/, dist/index.{js,d.ts}, dist/fonts/`,
 );

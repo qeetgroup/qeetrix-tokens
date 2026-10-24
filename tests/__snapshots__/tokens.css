@@ -3,8 +3,32 @@
  * edit src/tokens/** in qeetrix-tokens and run `bun run build`.
  *
  * :root holds the default modes. Set data-qx-color-scheme and data-qx-density on any element to
- * switch a subtree.
+ * switch a subtree. The fonts (Qeet Sans, Fira Code; SIL Open Font Licence 1.1, dist/fonts/) load
+ * only when text uses them.
  */
+
+@font-face {
+  font-family: "Qeet Sans";
+  src: url("./fonts/QeetSans.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Qeet Sans";
+  src: url("./fonts/QeetSans.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: italic;
+  font-display: swap;
+  font-variation-settings: "ital" 1;
+}
+@font-face {
+  font-family: "Fira Code";
+  src: url("./fonts/FiraCode-VF.woff2") format("woff2");
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
 
 @custom-media --qx-viewport-medium (width >= 600px);
 @custom-media --qx-viewport-expanded (width >= 840px);

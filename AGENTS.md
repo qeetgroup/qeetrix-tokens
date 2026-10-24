@@ -54,6 +54,7 @@ src/tokens/modes/color-scheme/    light / dark: every colour and shadow
 src/tokens/modes/density/         default / comfortable / compact: control sizes, row height, form gap
 src/tokens/component.tokens.json  the reviewed component decisions
 src/brand.ts                      brandTheme() — authored, compiled by tsc
+src/fonts/                        Qeet Sans and Fira Code (woff2, unmodified) + their OFL licences
 scripts/build.mjs, scripts/lib/   the writers;  scripts/derive.mjs  derived-value maintenance
 scripts/npm-versions.mjs           next unused patch on npm; CI skips versions npm has burned
 tests/                            source · contrast · dataviz · stylesheet · dtcg · brand · package

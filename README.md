@@ -44,6 +44,7 @@ standard DTCG JSON and typed JavaScript for every Qeet product on web, iOS and A
 - [✨ Why Qeetrix Tokens](#-why-qeetrix-tokens)
 - [📊 At a glance](#-at-a-glance)
 - [📦 Installation](#-installation)
+- [🔤 Fonts](#-fonts)
 - [🚀 Quick start](#-quick-start)
 - [🌗 Colour scheme and density](#-colour-scheme-and-density)
 - [🧭 What's in the package](#-whats-in-the-package)
@@ -103,8 +104,21 @@ npm install @qeetrix/tokens
 ```
 
 **Requirements:** ESM only, Node 20+ or any modern bundler. The stylesheet works in every
-evergreen browser. The font files are not included: load **Qeet Sans** and **Fira Code** in your
-app. Each font stack falls back to the system fonts.
+evergreen browser.
+
+## 🔤 Fonts
+
+**The fonts come with the tokens.** `@import "@qeetrix/tokens"` declares **Qeet Sans** (Cal Sans,
+variable: weight 400–700, optical size and the GEOM letter style) and **Fira Code** (weight
+300–700). A browser downloads a font file only when text uses that family, so there's nothing extra
+to load or opt out of.
+
+- **The files** are at `@qeetrix/tokens/fonts/*`, for `<link rel="preload">` or native apps.
+- **Licence:** both fonts are under the SIL Open Font Licence 1.1, shipped beside them
+  (`fonts/*-OFL.txt`).
+- **Build support:** Vite, Next.js, webpack and Tailwind v4 inside them (`@tailwindcss/vite`,
+  `@tailwindcss/postcss`) rewrite the font URLs automatically. The standalone Tailwind CLI and bare
+  postcss-import don't: serve `dist/fonts/` yourself there.
 
 ## 🚀 Quick start
 
