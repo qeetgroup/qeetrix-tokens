@@ -111,12 +111,12 @@
       },
       "geometry": {
         "$type": "number",
-        "$description": "Positions on Qeet Sans's GEOM axis — the letter style, from accessibility-first forms (0) to geometric (100). Cal Sans pairs Base (50) for headings with UI (25) for interface text.",
-        "ui": {
-          "$value": 25
-        },
+        "$description": "Positions on Qeet Sans's GEOM axis, the letter style: Base (50) and Geo (100) geometric forms.",
         "base": {
           "$value": 50
+        },
+        "geo": {
+          "$value": 100
         }
       }
     }

@@ -119,6 +119,8 @@ burned numbers, and the release stops early with a clear error rather than faili
 ## Gotchas
 
 - **`bun run test` rebuilds first**, so tests never see a stale `dist/`.
+- **A number token whose value is 0 is authored as a value, not an alias.** Terrazzo leaves an alias
+  to a `0` unresolved; the build stops with `n.toFixed is not a function` if one slips in.
 - **Breakpoints are `@custom-media`**, not CSS variables: `var()` cannot be used in a media query.
 - **Values relative to the current text colour don't belong here.** `currentColor` has no value
   outside a browser, so a tint like "22% of the text colour" stays in the component library's CSS.

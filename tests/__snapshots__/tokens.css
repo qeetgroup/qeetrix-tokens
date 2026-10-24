@@ -13,6 +13,7 @@
 
 :root {
   color-scheme: light;
+  --qx-border-width-accent: 3px;
   --qx-border-width-default: 1px;
   --qx-border-width-strong: 2px;
   --qx-color-bg-brand-bold: oklch(0.585 0.1835 40);
@@ -138,7 +139,8 @@
   --qx-font-family-indic: "Noto Sans", "Noto Sans Devanagari", "Noto Sans Bengali", "Noto Sans Tamil", "Noto Sans Telugu", "Noto Sans Kannada", "Noto Sans Gujarati", "Noto Sans Gurmukhi", ui-sans-serif, system-ui, sans-serif;
   --qx-font-family-mono: "Fira Code", ui-monospace, "SFMono-Regular", "SF Mono", "Menlo", monospace;
   --qx-font-family-sans: "Qeet Sans", ui-sans-serif, system-ui, sans-serif;
-  --qx-font-geometry-body: 25;
+  --qx-font-geometry-body: 0;
+  --qx-font-geometry-display: 100;
   --qx-font-geometry-heading: 50;
   --qx-icon-stroke-regular: 2;
   --qx-icon-stroke-thin: 1.5;
@@ -158,14 +160,14 @@
   --qx-motion-spring-snappy-stiffness: 400;
   --qx-opacity-disabled: 0.4;
   --qx-radius-chip: 9999px;
-  --qx-radius-control: 8px;
+  --qx-radius-control: 4px;
   --qx-radius-full: 9999px;
-  --qx-radius-modal: 16px;
+  --qx-radius-modal: 4px;
   --qx-radius-none: 0px;
-  --qx-radius-overlay: 12px;
-  --qx-radius-sm: 4px;
-  --qx-radius-surface: 12px;
-  --qx-radius-tooltip: 6px;
+  --qx-radius-overlay: 4px;
+  --qx-radius-sm: 2px;
+  --qx-radius-surface: 4px;
+  --qx-radius-tooltip: 2px;
   --qx-shadow-inset: inset 0px 1px 2px 0px oklch(0.1543 0 0 / 0.07);
   --qx-shadow-modal: 0px 8px 16px -8px oklch(0.1543 0 0 / 0.12), 0px 24px 48px -12px oklch(0.1543 0 0 / 0.2), 0px 0px 0px 1px oklch(0.1543 0 0 / 0.05);
   --qx-shadow-overlay: 0px 4px 8px -4px oklch(0.1543 0 0 / 0.08), 0px 12px 24px -8px oklch(0.1543 0 0 / 0.12), 0px 0px 0px 1px oklch(0.1543 0 0 / 0.05);

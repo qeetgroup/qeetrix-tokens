@@ -18,18 +18,22 @@
     },
     "geometry": {
       "$type": "number",
-      "$description": "The GEOM axis value per role: headings in Cal Sans's Base letter style, interface and body text in its UI style.",
+      "$description": "The GEOM axis value per role: display headlines in Qeet Sans's Geo letter style, headings in Base, and body and interface text in A11y, its most legible forms.",
+      "display": {
+        "$value": "{primitive.font.geometry.geo}"
+      },
       "heading": {
         "$value": "{primitive.font.geometry.base}"
       },
       "body": {
-        "$value": "{primitive.font.geometry.ui}"
+        "$value": 0,
+        "$description": "A11y (0), Qeet Sans's most legible letter style. Authored as a value, not an alias: Terrazzo leaves an alias to a 0 unresolved."
       }
     }
   },
   "typography": {
     "$type": "typography",
-    "$description": "Type roles. Every line height lands on the 4px grid; letter spacing stays 0 because Qeet Sans spaces each optical size itself. Display, heading and title use the heading geometry; body, label and code the body geometry.",
+    "$description": "Type roles. Every line height lands on the 4px grid; letter spacing stays 0 because Qeet Sans spaces each optical size itself. Display uses the display geometry, heading and title the heading geometry, and body, label and code the body geometry.",
     "display": {
       "lg": {
         "$value": {
@@ -347,34 +351,35 @@
       "$value": "{primitive.radius.0}"
     },
     "sm": {
-      "$value": "{primitive.radius.100}",
-      "$description": "Small marks that stay nearly square: a checkbox, inline code."
+      "$value": "{primitive.radius.50}",
+      "$description": "Small marks that stay square: a checkbox, a switch track, a keyboard key."
     },
     "tooltip": {
-      "$value": "{primitive.radius.150}"
+      "$value": "{primitive.radius.50}"
     },
     "control": {
-      "$value": "{primitive.radius.200}",
-      "$description": "Buttons, inputs, selects — every control."
+      "$value": "{primitive.radius.100}",
+      "$description": "Buttons, fields, selects: every control. Fields round only their top corners."
     },
     "surface": {
-      "$value": "{primitive.radius.300}",
+      "$value": "{primitive.radius.100}",
       "$description": "Cards, panels and other containers."
     },
     "overlay": {
-      "$value": "{primitive.radius.300}",
+      "$value": "{primitive.radius.100}",
       "$description": "Menus, popovers and other floating surfaces."
     },
     "modal": {
-      "$value": "{primitive.radius.400}",
-      "$description": "Dialogs and sheets."
+      "$value": "{primitive.radius.100}",
+      "$description": "Dialogs and drawers."
     },
     "chip": {
       "$value": "{primitive.radius.full}",
-      "$description": "Chips, tags and badges: full pills."
+      "$description": "Status tags: full pills."
     },
     "full": {
-      "$value": "{primitive.radius.full}"
+      "$value": "{primitive.radius.full}",
+      "$description": "People and choices that must read round: avatars, radios, presence dots."
     }
   },
   "border": {
@@ -392,6 +397,13 @@
           "value": 2,
           "unit": "px"
         }
+      },
+      "accent": {
+        "$value": {
+          "value": 3,
+          "unit": "px"
+        },
+        "$description": "The Ember bar that marks the current item, and the intent line on top of a dialog."
       }
     }
   },
