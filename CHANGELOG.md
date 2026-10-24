@@ -1,6 +1,9 @@
 # @qeetrix/tokens
 
-## 0.0.1
+## 0.0.3
+
+The first published version. (0.0.1 and 0.0.2 were used by an earlier package of the same name and
+later unpublished; npm never accepts a version number twice, so this release starts at 0.0.3.)
 
 The first release: the Qeetrix design tokens as their own package, designed from enterprise
 practice (Material 3, Fluent 2, Atlassian, Primer, Spectrum 2, Carbon, Polaris) rather than carried

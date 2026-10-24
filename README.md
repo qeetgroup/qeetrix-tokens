@@ -5,7 +5,7 @@ radius, elevation, motion and density — for every Qeet product, on every platf
 
 [![CI](https://github.com/qeetgroup/qeetrix-tokens/actions/workflows/ci.yml/badge.svg)](./.github/workflows/ci.yml)
 
-> **Status — 0.0.1, not yet published.**
+> **Status — 0.0.3, the first published version.**
 
 ## What's inside
 
@@ -22,11 +22,11 @@ kind of consumer:
 ## Install
 
 ```bash
-bun add @qeetrix/tokens@0.0.1 --exact
+bun add @qeetrix/tokens@0.0.3 --exact
 ```
 
 Pin the exact version while the package is `0.x`: npm treats every `0.0.x` release as potentially
-breaking, so `^0.0.1` never picks up `0.0.2` on its own.
+breaking, so `^0.0.3` never picks up `0.0.4` on its own.
 
 ## Web
 

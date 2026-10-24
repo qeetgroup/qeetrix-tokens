@@ -55,6 +55,7 @@ src/tokens/modes/density/         default / comfortable / compact: control sizes
 src/tokens/component.tokens.json  the reviewed component decisions
 src/brand.ts                      brandTheme() — authored, compiled by tsc
 scripts/build.mjs, scripts/lib/   the writers;  scripts/derive.mjs  derived-value maintenance
+scripts/npm-versions.mjs           next unused patch on npm; CI skips versions npm has burned
 tests/                            source · contrast · dataviz · stylesheet · dtcg · brand · package
 tests/__snapshots__/tokens.css    the reviewed stylesheet — a value change shows in the PR diff
 ```
@@ -110,6 +111,10 @@ While `0.x`: a new token or output is a patch; removing or renaming a token, cha
 means, or changing an output's shape is a **minor** — raise it in `package.json` by hand. Write the
 `CHANGELOG.md` section in the same PR. Publishing needs an `NPM_TOKEN` secret, or npm trusted
 publishing with `QEETRIX_NPM_TRUSTED_PUBLISHING=true`.
+
+npm never accepts a version number twice, even one that was unpublished — 0.0.1 and 0.0.2 of this
+name are gone for good. `scripts/npm-versions.mjs` reads the registry's full history: the bump skips
+burned numbers, and the release stops early with a clear error rather than failing at `npm publish`.
 
 ## Gotchas
 
