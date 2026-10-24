@@ -1,7 +1,7 @@
 {
   "name": "@qeetrix/tokens",
-  "version": "0.0.5",
-  "description": "Qeetrix design tokens \u2014 colour, typography, spacing, radius, elevation, motion and density for every Qeet product, as CSS variables, standard DTCG files and typed JavaScript values.",
+  "version": "0.0.6",
+  "description": "Qeetrix design tokens — colour, typography, spacing, radius, elevation, motion and density for every Qeet product, as CSS variables, standard DTCG files and typed JavaScript values.",
   "keywords": [
     "design-tokens",
     "design-system",
