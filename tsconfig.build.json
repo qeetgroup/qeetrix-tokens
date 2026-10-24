@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": true,
+    "rootDir": "src",
+    "outDir": "dist",
+    "allowJs": false,
+    "types": [],
+    "tsBuildInfoFile": "./node_modules/.cache/qeetrix-tokens/tsconfig.build.tsbuildinfo"
+  },
+  "include": ["src/brand.ts"],
+  "exclude": ["dist", "tests"]
+}

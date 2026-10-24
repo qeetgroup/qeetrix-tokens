@@ -1,0 +1,8 @@
+# Requests reviewers automatically.
+* @msboffl
+
+# What every Qeet product renders: the token source, the build that turns it into CSS and DTCG,
+# and the release path.
+/src/tokens/ @msboffl
+/scripts/ @msboffl
+/.github/ @msboffl
