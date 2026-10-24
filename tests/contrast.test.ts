@@ -104,6 +104,12 @@ const AA_PAIRS: [string, string, number][] = [
     3,
   ),
   ["color.border.focus", "color.bg.brand.subtle", 3],
+  // filled fields: their bottom line, focus frame and error frame sit on the field fill
+  ...pairs(
+    ["color.border.strong", "color.border.focus", "color.border.danger"],
+    ["color.bg.neutral.subtle", "color.bg.neutral.subtle-hover"],
+    3,
+  ),
   // selected text stays readable
   ["color.text.default", "color.selection over color.surface.default", 4.5],
   ["color.text.link", "color.selection over color.surface.default", 4.5],

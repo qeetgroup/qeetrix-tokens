@@ -1,5 +1,22 @@
 # @qeetrix/tokens
 
+## 0.0.5
+
+Qeetrix's design language is now **structured and square**: direction C of the design-language
+review, recorded in `qeetrix-files/qeetrix-react/05-design-rules.md`.
+
+- **Corners.** Controls and surfaces go to 4px; small marks to 2px. The values change for
+  `radius.control` (8→4), `radius.surface` (12→4), `radius.overlay` (12→4), `radius.modal` (16→4),
+  `radius.sm` (4→2) and `radius.tooltip` (6→2). `radius.chip` and `radius.full` stay pill-shaped, for
+  status tags, avatars and radios.
+- **Letterforms.** `font.geometry.body` moves from UI (25) to A11y (0), Qeet Sans's most legible forms.
+  The new `font.geometry.display` (100) gives display headlines the Geo forms.
+- **New `border.width.accent`** (3px): the Ember bar that marks the current item, and the intent line
+  on top of a dialog.
+- **New contrast tests.** Field lines, the focus frame and the error frame are now checked at 3:1 on
+  the filled field background (`color.bg.neutral.subtle` and `-hover`). All pass in both schemes.
+- The private corner and geometry scales drop the steps nothing uses.
+
 ## 0.0.4
 
 - **`@import "@qeetrix/tokens"` in CSS.** The package root now serves the stylesheet to CSS tools

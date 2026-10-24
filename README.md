@@ -86,7 +86,7 @@ standard DTCG JSON and typed JavaScript for every Qeet product on web, iOS and A
 
 <div align="center">
 
-| 🎯 209 tokens | 🌗 2 colour schemes | 📏 3 densities | ♿ WCAG 2.2 AA | 📦 0 dependencies |
+| 🎯 211 tokens | 🌗 2 colour schemes | 📏 3 densities | ♿ WCAG 2.2 AA | 📦 0 dependencies |
 |:---:|:---:|:---:|:---:|:---:|
 | semantic + component | light · dark | default · comfortable · compact | every pairing, tested | about 38 kB packed |
 
@@ -280,9 +280,13 @@ own as `-font-family`, `-font-size`, `-font-weight`, `-line-height` and `-letter
 | `code` | — | 14 / 20 | 12 / 16 | 400 | Code, in Fira Code |
 
 Sizes are font size / line height in px, and every line height sits on the 4px grid. Sizes are
-published in `rem`, so they follow the user's browser font size. Headings use Qeet Sans's heading
-geometry (`--qx-font-geometry-heading`) and text uses its body geometry. `--qx-font-family-indic`
-is a Noto stack for Indian scripts.
+published in `rem`, so they follow the user's browser font size. Qeet Sans's geometry axis sets
+the letterforms for each role:
+- display headlines use Geo (`--qx-font-geometry-display`, 100);
+- headings and titles use Base (`--qx-font-geometry-heading`, 50);
+- body, labels and code use A11y, the most legible forms (`--qx-font-geometry-body`, 0).
+
+`--qx-font-family-indic` is a Noto stack for Indian scripts.
 
 ### Space
 
@@ -297,19 +301,24 @@ follows density.
 
 ### Shape
 
+Qeetrix is square: controls and surfaces have a 4px corner, small marks 2px. Only people and status
+are round.
+
 | Token | Value | For |
 |---|:---:|---|
-| `--qx-radius-none` | 0 | Square edges |
-| `--qx-radius-sm` | 4px | Checkboxes, inline code |
-| `--qx-radius-tooltip` | 6px | Tooltips |
-| `--qx-radius-control` | 8px | Buttons, inputs, selects: every control |
-| `--qx-radius-surface` | 12px | Cards, panels, containers |
-| `--qx-radius-overlay` | 12px | Menus, popovers |
-| `--qx-radius-modal` | 16px | Dialogs, sheets |
-| `--qx-radius-chip` · `--qx-radius-full` | pill | Chips, tags, badges, avatars |
+| `--qx-radius-none` | 0 | Tables, tab lists, page sections |
+| `--qx-radius-sm` | 2px | Small marks: checkboxes, switch tracks, keyboard keys |
+| `--qx-radius-tooltip` | 2px | Tooltips |
+| `--qx-radius-control` | 4px | Buttons, fields, selects: every control. Fields round only their top corners |
+| `--qx-radius-surface` | 4px | Cards, panels, containers |
+| `--qx-radius-overlay` | 4px | Menus, popovers |
+| `--qx-radius-modal` | 4px | Dialogs, drawers |
+| `--qx-radius-chip` | pill | Status tags |
+| `--qx-radius-full` | pill | Avatars, radios, presence dots |
 
-Borders: `--qx-border-width-default` (1px) and `--qx-border-width-strong` (2px). Focus ring:
-`--qx-focus-ring-width` and `--qx-focus-ring-offset` (2px each).
+Borders: `--qx-border-width-default` (1px), `--qx-border-width-strong` (2px) and
+`--qx-border-width-accent` (3px, for the bar that marks the current item and the line on top of a
+dialog). Focus ring: `--qx-focus-ring-width` and `--qx-focus-ring-offset` (2px each).
 
 ### Elevation
 
