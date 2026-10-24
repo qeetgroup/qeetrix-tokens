@@ -60,7 +60,7 @@
     "@types/node": "^22.20.1",
     "culori": "^4.0.2",
     "publint": "^0.3.25",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "vitest": "^4.1.11"
   },
   "publishConfig": {
