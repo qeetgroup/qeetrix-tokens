@@ -1,6 +1,6 @@
 {
   "name": "@qeetrix/tokens",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Qeetrix design tokens — colour, typography, spacing, radius, elevation, motion and density for every Qeet product, as CSS variables, standard DTCG files and typed JavaScript values.",
   "keywords": [
     "design-tokens",
@@ -55,13 +55,13 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",
-    "@biomejs/biome": "2.5.10",
+    "@biomejs/biome": "2.6.2",
     "@terrazzo/parser": "^2.10.0",
-    "@types/node": "^22.20.1",
+    "@types/node": "^26.6.5",
     "culori": "^4.0.2",
     "publint": "^0.3.25",
-    "typescript": "^6.0.3",
-    "vitest": "^4.1.11"
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5"
   },
   "publishConfig": {
     "access": "public"

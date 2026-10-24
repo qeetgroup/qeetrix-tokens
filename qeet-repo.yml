@@ -14,14 +14,14 @@ repository:
   product: qeetrix
   type: library
   role: primary
-  status: development         # not yet published
+  status: active
   visibility: public
   default_branch: main
   production_branch: main
 
 package:
   name: "@qeetrix/tokens"
-  version: 0.0.1
+  version: 0.0.3
   registry: registry.npmjs.org
   access: public
   license: MIT
@@ -69,6 +69,7 @@ commands:
   format: bun run format
   test: bun run test
   package_checks: bun run check:package
+  next_version: node scripts/npm-versions.mjs next <version>   # skips versions npm has burned
 
 ci:
   workflows: [ci.yml, version.yml, release.yml, rollback.yml]

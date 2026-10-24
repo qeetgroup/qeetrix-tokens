@@ -74,6 +74,10 @@ jobs:
           elif git rev-parse -q --verify "refs/tags/v$version" >/dev/null; then
             echo "::error::Tag v$version already exists but $name@$version is not published. Resolve by hand."
             exit 1
+          elif ! NPM_REGISTRY="${{ vars.QEETRIX_NPM_REGISTRY }}" node scripts/npm-versions.mjs check "$version"; then
+            # npm view reports an unpublished version as missing, but npm publish refuses it.
+            echo "::error::$name@$version was published before and later unpublished; npm never accepts it again. Raise the version."
+            exit 1
           else
             echo "$name@$version is new — releasing."
             echo "release=true" >> "$GITHUB_OUTPUT"

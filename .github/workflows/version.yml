@@ -36,6 +36,7 @@ jobs:
       - name: bump the patch version unless it is already raised
         env:
           BASE: ${{ github.base_ref }}
+          NPM_REGISTRY: ${{ vars.QEETRIX_NPM_REGISTRY }}
         run: |
           set -euo pipefail
 
@@ -65,10 +66,9 @@ jobs:
             exit 0
           fi
 
-          next=$(node -e "
-            const [maj, min, patch] = '$base'.split('.').map(Number);
-            console.log([maj, min, patch + 1].join('.'));
-          ")
+          # The next patch npm has never accepted: a version that was published and later
+          # unpublished can never be published again, so it is skipped.
+          next=$(node scripts/npm-versions.mjs next "$base")
           echo "Bumping $current -> $next"
 
           node -e "
