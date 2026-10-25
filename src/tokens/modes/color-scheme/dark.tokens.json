@@ -280,7 +280,7 @@
         "$value": "{primitive.color.graphite.950}"
       },
       "brand": {
-        "$value": "{primitive.color.qeet.500}",
+        "$value": "{primitive.color.qeet.400}",
         "$extensions": {
           "in.qeet.qeetrix": {
             "tenantOverridable": true
@@ -384,7 +384,7 @@
       }
     },
     "border": {
-      "$description": "Borders and dividers. border.strong is the control boundary and meets 3:1 (WCAG 1.4.11).",
+      "$description": "Borders and dividers. border.strong is the control boundary and meets 3:1 (WCAG 1.4.11); so do the status borders, on every surface and on their own subtle fill.",
       "default": {
         "$value": "{primitive.color.graphite.825}"
       },
@@ -635,7 +635,7 @@
       }
     },
     "code": {
-      "$description": "Syntax colours for code blocks, JSON trees and diffs. Each meets 4.5:1 on surface.sunken and surface.default.",
+      "$description": "Syntax colours for code blocks, JSON trees and diffs. Each meets 4.5:1 on surface.sunken, surface.default and bg.neutral.subtle (the code block panel).",
       "keyword": {
         "$value": "{primitive.color.blue.400}"
       },
