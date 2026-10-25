@@ -174,7 +174,7 @@
         "$value": "{primitive.color.graphite.0}"
       },
       "brand": {
-        "$value": "{primitive.color.qeet.700}",
+        "$value": "{primitive.color.qeet.800}",
         "$extensions": {
           "in.qeet.qeetrix": {
             "tenantOverridable": true
@@ -218,13 +218,13 @@
         "$value": "{primitive.color.red.700}"
       },
       "warning": {
-        "$value": "{primitive.color.amber.700}"
+        "$value": "{primitive.color.amber.800}"
       },
       "success": {
-        "$value": "{primitive.color.green.700}"
+        "$value": "{primitive.color.green.800}"
       },
       "info": {
-        "$value": "{primitive.color.blue.700}"
+        "$value": "{primitive.color.blue.800}"
       }
     },
     "icon": {
@@ -278,7 +278,7 @@
       }
     },
     "border": {
-      "$description": "Borders and dividers. border.strong is the control boundary and meets 3:1 (WCAG 1.4.11).",
+      "$description": "Borders and dividers. border.strong is the control boundary and meets 3:1 (WCAG 1.4.11); so do the status borders, on every surface and on their own subtle fill.",
       "default": {
         "$value": "{primitive.color.graphite.200}"
       },
@@ -319,13 +319,13 @@
         "$value": "{primitive.color.red.600}"
       },
       "warning": {
-        "$value": "{primitive.color.amber.300}"
+        "$value": "{primitive.color.amber.600}"
       },
       "success": {
-        "$value": "{primitive.color.green.300}"
+        "$value": "{primitive.color.green.600}"
       },
       "info": {
-        "$value": "{primitive.color.blue.300}"
+        "$value": "{primitive.color.blue.600}"
       },
       "disabled": {
         "$value": "{primitive.color.graphite.200}"
@@ -529,12 +529,12 @@
       }
     },
     "code": {
-      "$description": "Syntax colours for code blocks, JSON trees and diffs. Each meets 4.5:1 on surface.sunken and surface.default.",
+      "$description": "Syntax colours for code blocks, JSON trees and diffs. Each meets 4.5:1 on surface.sunken, surface.default and bg.neutral.subtle (the code block panel).",
       "keyword": {
         "$value": "{primitive.color.blue.700}"
       },
       "string": {
-        "$value": "{primitive.color.green.700}"
+        "$value": "{primitive.color.green.800}"
       },
       "number": {
         "$value": "{primitive.color.qeet.700}"

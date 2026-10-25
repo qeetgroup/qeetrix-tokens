@@ -279,8 +279,8 @@
         "400": {
           "$value": {
             "colorSpace": "oklch",
-            "components": [0.66, 0.22, 22],
-            "hex": "#fc4351"
+            "components": [0.73, 0.165, 20],
+            "hex": "#fe777c"
           }
         },
         "500": {
@@ -519,8 +519,8 @@
         "400": {
           "$value": {
             "colorSpace": "oklch",
-            "components": [0.7, 0.163, 245],
-            "hex": "#29a6fc"
+            "components": [0.71, 0.162, 245],
+            "hex": "#2fa9ff"
           }
         },
         "500": {

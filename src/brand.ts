@@ -10,7 +10,10 @@
  *     a mid-tone colour that carries neither is darkened until white does;
  *   - hover and pressed step away from the label colour, so they only gain contrast;
  *   - brand text and links reach 4.5:1, and icons, borders and the focus ring 3:1, on every surface
- *     of the scheme they are for.
+ *     of the scheme they are for, and on the brand's own tints (bg.brand.subtle, bg.selected) —
+ *     a brand Badge, a ghost button's hover, a link or focus ring in a selected row;
+ *   - brand text also reaches 4.5:1 on the tints' hover and pressed states — a ghost button
+ *     pressed, a selected row hovered — and on the neutral fills at rest, hovered and pressed.
  *
  * Apply the result as CSS variables on the tenant's subtree — with setProperty, because custom
  * properties can't be assigned as style fields:
@@ -163,6 +166,20 @@ export const SURFACES: Record<"light" | "dark", Oklch[]> = {
   ],
 };
 
+/** The neutral fills an item takes at rest, hovered and pressed (bg.neutral.subtle, -hover, -pressed). */
+export const NEUTRALS: Record<"light" | "dark", Oklch[]> = {
+  light: [
+    { l: 0.958, c: 0.003, h: 60 }, // graphite.100
+    { l: 0.937, c: 0.003, h: 60 }, // graphite.150
+    { l: 0.912, c: 0.003, h: 60 }, // graphite.200
+  ],
+  dark: [
+    { l: 0.268, c: 0.001, h: 60 }, //  graphite.825
+    { l: 0.3, c: 0.0015, h: 60 }, //   graphite.800
+    { l: 0.34, c: 0.0015, h: 60 }, //  graphite.750
+  ],
+};
+
 /** The light subtle fills follow the qeet ramp's 100 / 150 / 200 steps, scaled to the tenant's chroma. */
 export const SUBTLE_STEPS = {
   100: { l: 0.952, c: 0.03 },
@@ -198,17 +215,24 @@ function seek(
 const clears = (color: Oklch, surfaces: Oklch[], ratio: number) =>
   surfaces.every((surface) => contrast(color, surface) >= ratio);
 
-/** Text, links, icons and lines for one scheme: as close to the brand colour as contrast allows. */
-function marks(seed: Oklch, scheme: "light" | "dark") {
-  const surfaces = SURFACES[scheme];
+/**
+ * Text, links, icons and lines for one scheme: as close to the brand colour as contrast allows,
+ * against the scheme's surfaces and the tints derived from the brand colour itself. Links and
+ * lines clear the resting tints; brand text clears every tint and neutral fill, through hover and
+ * pressed.
+ */
+function marks(seed: Oklch, scheme: "light" | "dark", tints: { rest: Oklch[]; all: Oklch[] }) {
+  const atRest = [...SURFACES[scheme], ...tints.rest];
+  const everywhere = [...SURFACES[scheme], ...NEUTRALS[scheme], ...tints.all];
   // Light surfaces need a darker mark, dark surfaces a lighter one.
   const direction = scheme === "light" ? -1 : 1;
-  const text = seek(seed, seed.l, direction, (c) => clears(c, surfaces, TEXT));
-  const line = seek(seed, seed.l, direction, (c) => clears(c, surfaces, NON_TEXT));
-  const linkHover = seek(text, text.l + 0.06 * direction, direction, (c) =>
-    clears(c, surfaces, TEXT),
+  const text = seek(seed, seed.l, direction, (c) => clears(c, everywhere, TEXT));
+  const link = seek(seed, seed.l, direction, (c) => clears(c, atRest, TEXT));
+  const line = seek(seed, seed.l, direction, (c) => clears(c, atRest, NON_TEXT));
+  const linkHover = seek(link, link.l + 0.06 * direction, direction, (c) =>
+    clears(c, atRest, TEXT),
   );
-  return { text, line, linkHover };
+  return { text, link, line, linkHover };
 }
 
 /** The tenant's brand colour as the Qeetrix brand tokens, for light and dark. */
@@ -233,6 +257,21 @@ export function brandTheme(color: string): BrandTheme {
     clampChroma({ l: SUBTLE_STEPS[step].l, c: SUBTLE_STEPS[step].c * chroma, h: seed.h });
   const surfaceDefaultDark = SURFACES.dark[1] as Oklch;
   const darkSubtle = (amount: number) => mix(seed, surfaceDefaultDark, amount);
+  // The tints brand marks are set on: at rest, bg.brand.subtle and bg.selected (one value in
+  // light); with them, their hover and pressed states.
+  const tints = {
+    light: {
+      rest: [lightSubtle(100)],
+      all: [lightSubtle(100), lightSubtle(150), lightSubtle(200)],
+    },
+    dark: {
+      rest: [darkSubtle(DARK_SUBTLE.rest), darkSubtle(DARK_SELECTED.rest)],
+      all: [
+        ...[DARK_SUBTLE.rest, DARK_SUBTLE.hover, DARK_SUBTLE.pressed].map(darkSubtle),
+        ...[DARK_SELECTED.rest, DARK_SELECTED.hover].map(darkSubtle),
+      ],
+    },
+  };
 
   const shared = {
     "--qx-color-bg-brand-bold": css(bold),
@@ -242,8 +281,8 @@ export function brandTheme(color: string): BrandTheme {
     "--qx-color-icon-on-brand": css(label),
     "--qx-color-selection": css(seed, 0.2),
   };
-  const light = marks(seed, "light");
-  const dark = marks(seed, "dark");
+  const light = marks(seed, "light", tints.light);
+  const dark = marks(seed, "dark", tints.dark);
 
   return {
     light: {
@@ -254,7 +293,7 @@ export function brandTheme(color: string): BrandTheme {
       "--qx-color-bg-selected": css(lightSubtle(100)),
       "--qx-color-bg-selected-hover": css(lightSubtle(150)),
       "--qx-color-text-brand": css(light.text),
-      "--qx-color-text-link": css(light.text),
+      "--qx-color-text-link": css(light.link),
       "--qx-color-text-link-hover": css(light.linkHover),
       "--qx-color-icon-brand": css(light.line),
       "--qx-color-border-brand": css(light.line),
@@ -269,7 +308,7 @@ export function brandTheme(color: string): BrandTheme {
       "--qx-color-bg-selected": css(darkSubtle(DARK_SELECTED.rest)),
       "--qx-color-bg-selected-hover": css(darkSubtle(DARK_SELECTED.hover)),
       "--qx-color-text-brand": css(dark.text),
-      "--qx-color-text-link": css(dark.text),
+      "--qx-color-text-link": css(dark.link),
       "--qx-color-text-link-hover": css(dark.linkHover),
       "--qx-color-icon-brand": css(dark.line),
       "--qx-color-border-brand": css(dark.line),

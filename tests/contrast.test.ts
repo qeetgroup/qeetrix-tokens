@@ -22,6 +22,18 @@ const SURFACES = ["canvas", "default", "raised", "overlay", "sunken"].map(
 const pairs = (fgs: string[], bgs: string[], min: number) =>
   fgs.flatMap((fg) => bgs.map((bg): [string, string, number] => [fg, bg, min]));
 
+/** Status and brand text: every role that colours text by meaning. */
+const ROLE_TEXT = ["danger", "warning", "success", "info", "brand"].map((r) => `color.text.${r}`);
+/**
+ * Every fill an item takes at rest, hovered, pressed or selected — the neutral, selected and brand
+ * tints and each of their states — read from the tokens, so a new state joins the matrix by itself.
+ */
+const INTERACTION_FILLS = Object.keys(tokensFor())
+  .filter((id) =>
+    /^color\.bg\.(neutral\.subtle|selected|brand\.subtle)(-hover|-pressed)?$/.test(id),
+  )
+  .sort();
+
 /** [foreground, background, minimum]. A background may be "a over b". */
 const AA_PAIRS: [string, string, number][] = [
   // body text everywhere it is designed to sit
@@ -38,6 +50,15 @@ const AA_PAIRS: [string, string, number][] = [
     4.5,
   ),
   ...pairs(["color.text.brand", "color.text.link", "color.text.link-hover"], SURFACES, 4.5),
+  // links on the brand's own tints: a link in a selected row
+  ...pairs(
+    ["color.text.link", "color.text.link-hover"],
+    ["color.bg.brand.subtle", "color.bg.selected"],
+    4.5,
+  ),
+  // the matrix: status and brand text on every interaction fill, at rest, hovered and pressed — a
+  // destructive Menu item, a ghost button, a Badge in a selected row, a status value in a field
+  ...pairs(ROLE_TEXT, INTERACTION_FILLS, 4.5),
   // labels on bold fills, through every interaction state
   ...pairs(
     ["color.text.on-brand", "color.icon.on-brand"],
@@ -66,12 +87,18 @@ const AA_PAIRS: [string, string, number][] = [
     ],
     4.5,
   ),
-  // status text on surfaces and on its own subtle fill
+  // status text on surfaces (overlay: a destructive Menu item at rest) and on its own subtle fill
+  // (a Badge); the interaction fills are in the matrix above
   ...(["danger", "warning", "success", "info"] as const).flatMap(
     (s): [string, string, number][] => [
       ...pairs(
         [`color.text.${s}`],
-        ["color.surface.canvas", "color.surface.default", "color.surface.raised"],
+        [
+          "color.surface.canvas",
+          "color.surface.default",
+          "color.surface.raised",
+          "color.surface.overlay",
+        ],
         4.5,
       ),
       [`color.text.${s}`, `color.bg.${s}.subtle`, 4.5],
@@ -99,11 +126,22 @@ const AA_PAIRS: [string, string, number][] = [
       "color.border.brand",
       "color.border.selected",
       "color.border.danger",
+      "color.border.warning",
+      "color.border.success",
+      "color.border.info",
     ],
     [...SURFACES, "color.bg.input"],
     3,
   ),
+  // a status rule against its own tint: the rule under a status banner
+  ...(["danger", "warning", "success", "info"] as const).map((s): [string, string, number] => [
+    `color.border.${s}`,
+    `color.bg.${s}.subtle`,
+    3,
+  ]),
+  // the focus frame on a brand tint, and inside a selected row
   ["color.border.focus", "color.bg.brand.subtle", 3],
+  ["color.border.focus", "color.bg.selected", 3],
   // filled fields: their bottom line, focus frame and error frame sit on the field fill
   ...pairs(
     ["color.border.strong", "color.border.focus", "color.border.danger"],
@@ -113,7 +151,7 @@ const AA_PAIRS: [string, string, number][] = [
   // selected text stays readable
   ["color.text.default", "color.selection over color.surface.default", 4.5],
   ["color.text.link", "color.selection over color.surface.default", 4.5],
-  // code
+  // code, on the surfaces it is set on and on the code block panel (bg.neutral.subtle)
   ...pairs(
     [
       "color.code.keyword",
@@ -123,7 +161,7 @@ const AA_PAIRS: [string, string, number][] = [
       "color.code.punctuation",
       "color.code.comment",
     ],
-    ["color.surface.sunken", "color.surface.default"],
+    ["color.surface.sunken", "color.surface.default", "color.bg.neutral.subtle"],
     4.5,
   ),
   // chart status marks and chrome
@@ -164,7 +202,8 @@ describe.each(SCHEMES.map((s) => [s]))("%s", (scheme) => {
     }))
       .filter((r) => r.ratio < r.min)
       .map((r) => `${r.fg} on ${r.bg}: ${r.ratio.toFixed(2)}:1 < ${r.min}:1`);
-    expect(AA_PAIRS.length).toBeGreaterThan(140);
+    expect(AA_PAIRS.length).toBeGreaterThan(200);
+    expect(INTERACTION_FILLS).toHaveLength(8);
     expect(failures).toEqual([]);
   });
 });

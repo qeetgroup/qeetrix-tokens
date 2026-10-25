@@ -87,7 +87,7 @@ standard DTCG JSON and typed JavaScript for every Qeet product on web, iOS and A
 
 <div align="center">
 
-| 🎯 211 tokens | 🌗 2 colour schemes | 📏 3 densities | ♿ WCAG 2.2 AA | 📦 0 dependencies |
+| 🎯 212 tokens | 🌗 2 colour schemes | 📏 3 densities | ♿ WCAG 2.2 AA | 📦 0 dependencies |
 |:---:|:---:|:---:|:---:|:---:|
 | semantic + component | light · dark | default · comfortable · compact | every pairing, tested | about 38 kB packed |
 
@@ -250,7 +250,7 @@ interactive ones also have `-hover` and `-pressed` states.
 | Token | Light | Dark |
 |---|:---:|:---:|
 | `--qx-color-bg-brand-bold` | ![#d04800](https://img.shields.io/badge/%23d04800-d04800?style=flat-square) | ![#d04800](https://img.shields.io/badge/%23d04800-d04800?style=flat-square) |
-| `--qx-color-text-brand` | ![#b73d10](https://img.shields.io/badge/%23b73d10-b73d10?style=flat-square) | ![#f26d0e](https://img.shields.io/badge/%23f26d0e-f26d0e?style=flat-square) |
+| `--qx-color-text-brand` | ![#9b3314](https://img.shields.io/badge/%239b3314-9b3314?style=flat-square) | ![#ff9646](https://img.shields.io/badge/%23ff9646-ff9646?style=flat-square) |
 | `--qx-color-text-default` | ![#0e0d0d](https://img.shields.io/badge/%230e0d0d-0e0d0d?style=flat-square) | ![#f3f1ef](https://img.shields.io/badge/%23f3f1ef-f3f1ef?style=flat-square) |
 | `--qx-color-text-subtle` | ![#484747](https://img.shields.io/badge/%23484747-484747?style=flat-square) | ![#d1cfce](https://img.shields.io/badge/%23d1cfce-d1cfce?style=flat-square) |
 | `--qx-color-surface-default` | ![#ffffff](https://img.shields.io/badge/%23ffffff-ffffff?style=flat-square) | ![#131312](https://img.shields.io/badge/%23131312-131312?style=flat-square) |
@@ -527,7 +527,11 @@ Put `css` in a `<style>` element. To set a single element instead, use
 - **WCAG AA is guaranteed for any input colour.**
   - The label on a brand fill reaches 4.5:1. It is white, or near-black for a light colour, and a
     mid-tone that suits neither is darkened until white works.
-  - Brand text and links reach 4.5:1, and icons, borders and the focus ring 3:1, on every surface.
+  - Brand text and links reach 4.5:1, and icons, borders and the focus ring 3:1, on every surface
+    and on the brand's own tints (`bg-brand-subtle`, `bg-selected`): a brand badge, a ghost
+    button's hover, a link or focus ring in a selected row. Brand text also reaches 4.5:1 on the
+    tints' hover and pressed states, such as a ghost button being pressed, and on the neutral
+    fills at rest, hovered and pressed.
 - **It is safe with untrusted input.** It accepts only `#rgb` or `#rrggbb` and throws a
   `TypeError` for anything else. Every value it returns is a colour it computed itself, so the
   output is safe to put in a style element.

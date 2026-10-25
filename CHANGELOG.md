@@ -1,5 +1,61 @@
 # @qeetrix/tokens
 
+## 0.0.8
+
+Contrast fixes, found while building the Storybook on 0.0.7. Every pair below now has a test, and
+each would have failed one before (except `code.string`, which passed with too little margin).
+
+- **Dark danger red** (`primitive.color.red.400`, used only by the dark scheme): `#fc4351` →
+  `#fe777c` (oklch 0.66 0.22 22 → 0.73 0.165 20). It sat only 0.025 lightness above red.500 and off
+  the ramp's hue progression. `text.danger` reaches 5.89:1 on `bg.neutral.subtle` (was 4.39),
+  5.30:1 on `bg.neutral.subtle-hover` (a highlighted destructive Menu item; was 3.94) and 4.57:1 on
+  `bg.neutral.subtle-pressed` (was 3.40). `code.literal` reaches 5.89:1 on the code block panel
+  (was 4.39). `icon.danger`, `dataviz.negative` and `dataviz.diverging.1` follow, and gain contrast.
+- **Light status text moves one step darker**, except danger:
+  - `text.success`: green.700 → green.800 (`#017e51` → `#016542`): 5.92:1 on
+    `bg.neutral.subtle-hover` (was 4.27), 6.17:1 on `bg.selected` (was 4.45), 5.76:1 on
+    `bg.selected-hover` (was 4.16), 6.28:1 on `bg.success.subtle` (was 4.53).
+  - `text.warning`: amber.700 → amber.800 (`#8c6000` → `#734c01`): 6.16:1 on `bg.selected-hover`
+    (was 4.49).
+  - `text.info`: blue.700 → blue.800 (`#006db4` → `#065793`): 6.05:1 on `bg.selected-hover` (was
+    4.39).
+- **Light `text.brand`**: qeet.700 → qeet.800 (`#b73d10` → `#9b3314`): 5.47:1 on
+  `bg.brand.subtle-pressed`, a ghost button pressed (was 4.26). `text.link` stays qeet.700.
+- **Dark `text.brand`**: qeet.500 → qeet.400 (`#f26d0e` → `#ff9646`): 5.43:1 on
+  `bg.neutral.subtle-pressed` (was 3.90) and 6.30:1 on `-hover` (was 4.53). `text.link` stays
+  qeet.500, the identity orange.
+- **Dark info blue** (`primitive.color.blue.400`): `#29a6fc` → `#2fa9ff` (oklch 0.7 0.163 245 →
+  0.71 0.162 245). Dark `text.info` reaches 4.62:1 on `bg.neutral.subtle-pressed` (was 4.45).
+  `icon.info`, `code.keyword` and dark `dataviz.sequential.6` / `diverging.7` follow, as does light
+  `dataviz.sequential.4`; both sequential scales stay in order.
+- **Light `code.string`**: green.700 → green.800 (`#017e51` → `#016542`), matching `text.success`
+  again: 6.30:1 on the code block panel and `surface.sunken` (was 4.55).
+- **Light status borders** move from the 300 steps to the 600 steps, as `border.danger` and the
+  dark scheme already were: `border.success` `#8fe0b0` → `#029862`, `border.warning` `#e9c775` →
+  `#a77601`, `border.info` `#97d3ff` → `#0186d5`. They reach at least 3.26:1 on every surface and on
+  their own subtle fill (were 1.37–1.63). They are now the same in both schemes, so they leave the
+  colour-scheme blocks of `tokens.css` and are declared once, in `:root`.
+- **`brandTheme()`** also guarantees brand text and links 4.5:1, and icons, borders and the focus
+  ring 3:1, on the brand's own tints (`bg.brand.subtle`, `bg.selected`): a brand Badge, a ghost
+  button's hover, a link or focus ring in a selected row. Brand text also reaches 4.5:1 on the
+  tints' hover and pressed states and on the neutral fills (`bg.neutral.subtle`, `-hover`,
+  `-pressed`). For `brandTheme("#1a73e8")`, light `text.brand` goes from `#136ee3` to `#005ecb`
+  (on `bg.brand.subtle` 4.18:1 → 5.28:1, on `-pressed` 3.63:1 → 4.59:1) and dark from `#2d83f9` to
+  `#64a3ff` (4.60:1 on the pressed neutral fill). Links change less.
+- **Tests:**
+  - a matrix of status and brand text (danger, warning, success, info, brand) on every interaction
+    fill — `bg.neutral.subtle`, `bg.selected` and `bg.brand.subtle`, each at rest, hovered and
+    pressed where the state exists — read from the tokens, so a new state joins it by itself: 40
+    pairs per scheme;
+  - status text on `surface.overlay`; links on `bg.brand.subtle` and `bg.selected`;
+  - the focus frame on `bg.selected`;
+  - every status border on every surface and on its own subtle fill;
+  - the code colours on the code block panel (`bg.neutral.subtle`);
+  - `brandTheme()` on the brand tints and, for brand text, the neutral fills, for the 180 sample
+    colours and a named blue, green, purple, near-yellow and dark colour.
+- README: the token count is 212, not 211; the `text.brand` swatches and the `brandTheme()`
+  guarantee are updated.
+
 ## 0.0.7
 
 - **New `typography.label.caps`** (`--qx-typography-label-caps`): 11 / 16px at weight 600, tracked
