@@ -1,5 +1,17 @@
 # @qeetrix/tokens
 
+## 0.0.7
+
+- **New `typography.label.caps`** (`--qx-typography-label-caps`): 11 / 16px at weight 600, tracked
+  +6% (0.66px), for the small capitals that label a group — navigation sections, table column
+  groups, panel sections. The component sets `text-transform: uppercase`. Untracked capitals crowd
+  together and read as a default; this is the only role with letter spacing, since Qeet Sans spaces
+  every other size itself. First used by the console sidebar in `@qeetrix/react`
+  (`qeetrix-files/qeetrix-react/07-components.md`, C1).
+- The private type scale gains an 11px step (`primitive.font.size.11`) for it.
+- **Test:** `label.caps` is written as a font shorthand with its letter spacing, and no other role is
+  tracked.
+
 ## 0.0.6
 
 - **The fonts ship with the tokens.** `tokens.css` now opens with `@font-face` rules for **Qeet Sans**
