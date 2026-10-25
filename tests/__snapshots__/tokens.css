@@ -287,6 +287,12 @@
   --qx-typography-heading-sm-font-weight: 600;
   --qx-typography-heading-sm-line-height: 1.3333;
   --qx-typography-heading-sm-letter-spacing: 0px;
+  --qx-typography-label-caps: 600 0.6875rem/1.4545 "Qeet Sans", ui-sans-serif, system-ui, sans-serif;
+  --qx-typography-label-caps-font-family: "Qeet Sans", ui-sans-serif, system-ui, sans-serif;
+  --qx-typography-label-caps-font-size: 0.6875rem;
+  --qx-typography-label-caps-font-weight: 600;
+  --qx-typography-label-caps-line-height: 1.4545;
+  --qx-typography-label-caps-letter-spacing: 0.66px;
   --qx-typography-label-lg: 500 1rem/1.5 "Qeet Sans", ui-sans-serif, system-ui, sans-serif;
   --qx-typography-label-lg-font-family: "Qeet Sans", ui-sans-serif, system-ui, sans-serif;
   --qx-typography-label-lg-font-size: 1rem;

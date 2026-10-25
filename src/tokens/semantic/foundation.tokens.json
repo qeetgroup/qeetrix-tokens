@@ -33,7 +33,7 @@
   },
   "typography": {
     "$type": "typography",
-    "$description": "Type roles. Every line height lands on the 4px grid; letter spacing stays 0 because Qeet Sans spaces each optical size itself. Display uses the display geometry, heading and title the heading geometry, and body, label and code the body geometry.",
+    "$description": "Type roles. Every line height lands on the 4px grid; letter spacing stays 0 because Qeet Sans spaces each optical size itself, except in label.caps, where small capitals need room to read. Display uses the display geometry, heading and title the heading geometry, and body, label and code the body geometry.",
     "display": {
       "lg": {
         "$value": {
@@ -221,6 +221,19 @@
             "unit": "px"
           },
           "lineHeight": 1.3333
+        }
+      },
+      "caps": {
+        "$description": "Small capitals that label a group: navigation sections, table column groups, panel sections. The component sets text-transform: uppercase, which isn't a token. Tracked +6% (0.66px at 11px) so the capitals don't crowd.",
+        "$value": {
+          "fontFamily": "{font.family.sans}",
+          "fontSize": "{primitive.font.size.11}",
+          "fontWeight": "{primitive.font.weight.semibold}",
+          "letterSpacing": {
+            "value": 0.66,
+            "unit": "px"
+          },
+          "lineHeight": 1.4545
         }
       }
     },

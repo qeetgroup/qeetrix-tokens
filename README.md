@@ -293,6 +293,11 @@ own as `-font-family`, `-font-size`, `-font-weight`, `-line-height` and `-letter
 | `label` | 16 / 24 | 14 / 20 | 12 / 16 | 500 | Buttons, inputs, tabs, menus |
 | `code` | — | 14 / 20 | 12 / 16 | 400 | Code, in Fira Code |
 
+One more role stands apart: **`--qx-typography-label-caps`**, 11 / 16 at weight 600, tracked +6%
+(`-letter-spacing` is 0.66px), for the small capitals that label a group: navigation sections,
+table column groups, panel sections. Set `text-transform: uppercase` with it. It's the only role
+with letter spacing; Qeet Sans spaces every other size itself.
+
 Sizes are font size / line height in px, and every line height sits on the 4px grid. Sizes are
 published in `rem`, so they follow the user's browser font size. Qeet Sans's geometry axis sets
 the letterforms for each role:
