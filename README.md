@@ -87,7 +87,7 @@ standard DTCG JSON and typed JavaScript for every Qeet product on web, iOS and A
 
 <div align="center">
 
-| 🎯 212 tokens | 🌗 2 colour schemes | 📏 3 densities | ♿ WCAG 2.2 AA | 📦 0 dependencies |
+| 🎯 213 tokens | 🌗 2 colour schemes | 📏 3 densities | ♿ WCAG 2.2 AA | 📦 0 dependencies |
 |:---:|:---:|:---:|:---:|:---:|
 | semantic + component | light · dark | default · comfortable · compact | every pairing, tested | about 38 kB packed |
 
@@ -405,7 +405,7 @@ that understands custom media, such as Lightning CSS, PostCSS or Tailwind v4:
 | `--qx-size-control-sm` · `-md` · `-lg` | 28 · 32 · 40px (follow density) |
 | `--qx-size-row` | 40px (follows density) |
 | `--qx-size-target-min` | 24px, the smallest pointer target allowed |
-| `--qx-size-icon-xs` · `-sm` · `-md` · `-lg` | 14 · 16 · 20 · 24px |
+| `--qx-size-icon-2xs` · `-xs` · `-sm` · `-md` · `-lg` | 12 · 14 · 16 · 20 · 24px |
 | `--qx-icon-stroke-thin` · `-regular` | 1.5 · 2 |
 | `--qx-opacity-disabled` | 0.4, for disabled content with no disabled colour (images) |
 | `--qx-component-*` | Eight reviewed component sizes: sidebar widths, command palette, timeline marker, tour |
@@ -553,7 +553,7 @@ const isWide = matchMedia(`(width >= ${BREAKPOINT.expanded}px)`).matches;
 | `DURATION` | `{ instant: 0, fast: 100, normal: 200, slow: 300, slower: 400 }`, in ms |
 | `EASING` | `{ standard, enter, exit, emphasized, linear }`, as CSS timing functions |
 | `SPRING` | `{ snappy, gentle }`, each `{ stiffness, dampingRatio }` |
-| `ICON_SIZE` · `ICON_STROKE` | `{ xs: 14, sm: 16, md: 20, lg: 24 }` · `{ thin: 1.5, regular: 2 }` |
+| `ICON_SIZE` · `ICON_STROKE` | `{ "2xs": 12, xs: 14, sm: 16, md: 20, lg: 24 }` · `{ thin: 1.5, regular: 2 }` |
 | `BREAKPOINT` | `{ medium: 600, expanded: 840, large: 1200, xlarge: 1600 }`, in px |
 | `COMPONENT` | Sidebar, command palette, timeline and tour geometry, as CSS lengths |
 | `brandTheme(hex)` · `TENANT_TOKENS` | [A tenant's brand colour](#-a-tenants-brand-colour) |

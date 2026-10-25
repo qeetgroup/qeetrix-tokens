@@ -322,6 +322,13 @@
     "$type": "dimension",
     "icon": {
       "$description": "Icon box sizes, in px: icons are drawn on a pixel grid.",
+      "2xs": {
+        "$description": "Marks inside 16–20px chips: Badge, filter tags.",
+        "$value": {
+          "value": 12,
+          "unit": "px"
+        }
+      },
       "xs": {
         "$value": {
           "value": 14,

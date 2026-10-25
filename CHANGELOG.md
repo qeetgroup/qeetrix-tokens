@@ -1,5 +1,11 @@
 # @qeetrix/tokens
 
+## 0.0.9
+
+- **New `size.icon.2xs`** (`--qx-size-icon-2xs`, `ICON_SIZE["2xs"]`): 12px, for marks inside 16–20px
+  chips such as Badge and filter tags. Badge drew 12px icons from a number in its own CSS; it now
+  has a token on the scale. The scale is 12 · 14 · 16 · 20 · 24.
+
 ## 0.0.8
 
 Contrast fixes, found while building the Storybook on 0.0.7. Every pair below now has a test, and
