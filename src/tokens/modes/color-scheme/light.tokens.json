@@ -420,29 +420,29 @@
         "3": {
           "$value": {
             "colorSpace": "oklch",
-            "components": [0.52, 0.0893, 192],
-            "hex": "#007976"
+            "components": [0.59, 0.1, 190],
+            "hex": "#0c908a"
           }
         },
         "4": {
           "$value": {
             "colorSpace": "oklch",
-            "components": [0.63, 0.15, 296],
-            "hex": "#9273d8"
+            "components": [0.66, 0.14, 298],
+            "hex": "#9d7ddc"
           }
         },
         "5": {
           "$value": {
             "colorSpace": "oklch",
-            "components": [0.63, 0.17, 350],
-            "hex": "#d15697"
+            "components": [0.53, 0.18, 358],
+            "hex": "#b72d6b"
           }
         },
         "6": {
           "$value": {
             "colorSpace": "oklch",
-            "components": [0.52, 0.16, 142],
-            "hex": "#207e18"
+            "components": [0.5, 0.16, 142],
+            "hex": "#17780f"
           }
         },
         "7": {
@@ -459,7 +459,7 @@
             "hex": "#424e5e"
           }
         },
-        "$description": "Eight series colours, used strictly in order. Every one meets 3:1 against the surfaces it is drawn on; neighbouring series stay distinguishable under deuteranopia, protanopia and tritanopia, and so do any two of the first five. Never tenant-overridable."
+        "$description": "Eight series colours, used strictly in order. Every one meets 3:1 against the surfaces it is drawn on; neighbours sit at least ΔEok 0.15 apart for normal vision and 0.08 under deuteranopia, protanopia and tritanopia, and any two of the first five stay distinguishable. Never tenant-overridable."
       },
       "sequential": {
         "1": {

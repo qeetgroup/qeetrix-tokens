@@ -57,6 +57,29 @@ describe.each(SCHEMES.map((s) => [s]))("%s", (scheme) => {
     }
   });
 
+  // QTRX-37: neighbours are the pairs a reader compares most (adjacent series, stacked parts).
+  it("keeps every neighbour well apart: ΔEok ≥ 0.15, and ≥ 0.08 under each deficiency", () => {
+    for (let i = 0; i < 7; i++) {
+      const [a, b] = [series[i] as Color, series[i + 1] as Color];
+      expect(distance(a, b), `neighbours ${i + 1}/${i + 2}`).toBeGreaterThanOrEqual(0.15);
+      for (const [name, simulate] of Object.entries(DEFICIENCIES)) {
+        expect(
+          distance(simulate(a), simulate(b)),
+          `neighbours ${i + 1}/${i + 2} under ${name}`,
+        ).toBeGreaterThanOrEqual(0.08);
+      }
+    }
+  });
+
+  it("keeps the dark series in a dark chart's band, amber alone a little lighter", () => {
+    if (scheme !== "dark") return;
+    const lightness = series.map((c) => converter("oklch")(c).l as number);
+    for (const [i, l] of lightness.entries()) {
+      expect(l, `series ${i + 1}`).toBeGreaterThanOrEqual(0.55);
+      expect(l, `series ${i + 1}`).toBeLessThanOrEqual(i === 6 ? 0.85 : 0.8);
+    }
+  });
+
   it.each(Object.entries(DEFICIENCIES))("stays distinguishable under %s", (_, simulate) => {
     const seen = series.map(simulate);
     for (let i = 0; i < 7; i++) {

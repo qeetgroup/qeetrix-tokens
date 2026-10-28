@@ -2,7 +2,7 @@
  * The published contract: every exported path exists, only dist/ and the changelog ship, src/ holds
  * only authored files, and the JavaScript values equal the tokens they come from.
  */
-import { existsSync, readdirSync } from "node:fs";
+import { existsSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { describe, expect, it } from "vitest";
@@ -109,9 +109,46 @@ describe("fonts", () => {
   const source = (face: string) => face.match(/url\("\.\/([^"]+)"\)/)?.[1];
 
   it("declares every face it ships, from a file that exists", () => {
-    expect(faces.map(family)).toEqual(["Qeet Sans", "Qeet Sans", "Fira Code"]);
+    expect(faces.map(family)).toEqual([
+      ...Array(6).fill("Qeet Sans"),
+      ...Array(3).fill("Fira Code"),
+    ]);
     for (const face of faces)
       expect(existsSync(join(root, "dist", source(face) ?? "missing"))).toBe(true);
+  });
+
+  // QTRX-10: subsets, each with the unicode-range of exactly what it holds, so a page downloads
+  // only what its text uses, and no character falls through to a whole font.
+  it("declares subsets with unicode ranges that never overlap, and never the whole font", () => {
+    const range = (face: string) => face.match(/unicode-range:\s*([^;]+);/)?.[1] ?? "";
+    const style = (face: string) => face.match(/font-style:\s*(\w+)/)?.[1];
+    const points = (face: string) =>
+      range(face)
+        .split(/,\s*/)
+        .flatMap((part) => {
+          const [a, b = a] = part.replace("U+", "").split("-");
+          const from = Number.parseInt(a ?? "0", 16);
+          const to = Number.parseInt(b ?? "0", 16);
+          return Array.from({ length: to - from + 1 }, (_, i) => from + i);
+        });
+    const seen = new Map<string, Set<number>>();
+    for (const face of faces) {
+      expect(range(face), source(face)).not.toBe("");
+      expect(source(face)).not.toMatch(/QeetSans\.woff2|FiraCode-VF\.woff2/);
+      const key = `${family(face)} ${style(face)}`;
+      const set = seen.get(key) ?? new Set<number>();
+      for (const point of points(face)) {
+        expect(set.has(point), `${key} U+${point.toString(16)}`).toBe(false);
+        set.add(point);
+      }
+      seen.set(key, set);
+    }
+  });
+
+  it("keeps the upright Latin Qeet Sans under 100 KB, the text every page loads", () => {
+    const { size } = statSync(join(root, "dist/fonts/QeetSans-latin.woff2"));
+    expect(size).toBeLessThan(100_000);
+    expect(size).toBeLessThan(statSync(join(root, "dist/fonts/QeetSans.woff2")).size / 3);
   });
 
   it("ships each font with its SIL Open Font Licence", () => {
@@ -119,8 +156,18 @@ describe("fonts", () => {
     expect(files).toEqual([
       "FiraCode-OFL.txt",
       "FiraCode-VF.woff2",
+      "FiraCode-latin-ext.woff2",
+      "FiraCode-latin.woff2",
+      "FiraCode-other.woff2",
+      "QeetSans-Italic-latin-ext.woff2",
+      "QeetSans-Italic-latin.woff2",
+      "QeetSans-Italic-other.woff2",
       "QeetSans-OFL.txt",
+      "QeetSans-latin-ext.woff2",
+      "QeetSans-latin.woff2",
+      "QeetSans-other.woff2",
       "QeetSans.woff2",
+      "subsets.json",
     ]);
     for (const licence of files.filter((f) => f.endsWith("-OFL.txt"))) {
       expect(read(`dist/fonts/${licence}`)).toContain("SIL Open Font License, Version 1.1");

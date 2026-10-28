@@ -512,60 +512,60 @@
         "1": {
           "$value": {
             "colorSpace": "oklch",
-            "components": [0.64, 0.15, 258],
-            "hex": "#4e8ce6"
+            "components": [0.62, 0.16, 258],
+            "hex": "#4385e4"
           }
         },
         "2": {
           "$value": {
             "colorSpace": "oklch",
-            "components": [0.81, 0.1214, 52],
-            "hex": "#ffaa75"
+            "components": [0.76, 0.14, 52],
+            "hex": "#f69557"
           }
         },
         "3": {
           "$value": {
             "colorSpace": "oklch",
-            "components": [0.7, 0.12, 192],
-            "hex": "#02b5b2"
+            "components": [0.71, 0.11, 190],
+            "hex": "#34b7b1"
           }
         },
         "4": {
           "$value": {
             "colorSpace": "oklch",
-            "components": [0.81, 0.1078, 296],
-            "hex": "#c7b3ff"
+            "components": [0.78, 0.12, 300],
+            "hex": "#c3a5f9"
           }
         },
         "5": {
           "$value": {
             "colorSpace": "oklch",
-            "components": [0.83, 0.1124, 350],
-            "hex": "#ffa9d2"
+            "components": [0.64, 0.18, 0],
+            "hex": "#de5388"
           }
         },
         "6": {
           "$value": {
             "colorSpace": "oklch",
-            "components": [0.7, 0.15, 142],
-            "hex": "#63b55b"
+            "components": [0.67, 0.17, 142],
+            "hex": "#4eae45"
           }
         },
         "7": {
           "$value": {
             "colorSpace": "oklch",
-            "components": [0.88, 0.1199, 82],
-            "hex": "#ffd077"
+            "components": [0.83, 0.13, 88],
+            "hex": "#eac25a"
           }
         },
         "8": {
           "$value": {
             "colorSpace": "oklch",
-            "components": [0.6, 0.03, 255],
-            "hex": "#748192"
+            "components": [0.58, 0.03, 255],
+            "hex": "#6f7c8c"
           }
         },
-        "$description": "Eight series colours, used strictly in order. Every one meets 3:1 against the surfaces it is drawn on; neighbouring series stay distinguishable under deuteranopia, protanopia and tritanopia, and so do any two of the first five. Never tenant-overridable."
+        "$description": "Eight series colours, used strictly in order. Every one meets 3:1 against the surfaces it is drawn on; neighbours sit at least ΔEok 0.15 apart for normal vision and 0.08 under deuteranopia, protanopia and tritanopia, and any two of the first five stay distinguishable. In dark mode they sit at OKLCH L 0.58–0.78, amber alone at 0.83: a darker amber reads as brown. Never tenant-overridable."
       },
       "sequential": {
         "1": {
