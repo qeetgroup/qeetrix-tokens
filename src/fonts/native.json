@@ -1,0 +1,75 @@
+{
+  "fontTools": "4.68.0",
+  "fonts": [
+    {
+      "family": "Qeet Sans",
+      "file": "QeetSans.ttf",
+      "format": "truetype",
+      "axes": [
+        {
+          "tag": "opsz",
+          "min": 8.0,
+          "default": 14.0,
+          "max": 45.0
+        },
+        {
+          "tag": "GEOM",
+          "min": 0.0,
+          "default": 25.0,
+          "max": 100.0
+        },
+        {
+          "tag": "wght",
+          "min": 400.0,
+          "default": 400.0,
+          "max": 700.0
+        },
+        {
+          "tag": "YTAS",
+          "min": 1440.0,
+          "default": 1440.0,
+          "max": 1600.0
+        },
+        {
+          "tag": "SHRP",
+          "min": 0.0,
+          "default": 0.0,
+          "max": 100.0
+        },
+        {
+          "tag": "ital",
+          "min": 0.0,
+          "default": 0.0,
+          "max": 1.0
+        }
+      ],
+      "bytes": 1186252,
+      "sha256": "668e52b011f9273a4c18881b69e5d31086a64c31584412cce7fadba5d28af12b",
+      "licence": "QeetSans-OFL.txt",
+      "from": {
+        "file": "QeetSans.woff2",
+        "sha256": "8362505b2b9faf2faff081d01490b13e4a7c99384f5b10d7a475b1c5a1db55f1"
+      }
+    },
+    {
+      "family": "Fira Code",
+      "file": "FiraCode-VF.ttf",
+      "format": "truetype",
+      "axes": [
+        {
+          "tag": "wght",
+          "min": 300.0,
+          "default": 300.0,
+          "max": 700.0
+        }
+      ],
+      "bytes": 286296,
+      "sha256": "6017720c9794b1c8187af200a1cc2df3a32ddbd097767930ec19f9c7db0c718d",
+      "licence": "FiraCode-OFL.txt",
+      "from": {
+        "file": "FiraCode-VF.woff2",
+        "sha256": "408e876a202f15ea6ee307a70a65cf40ceb222c589a0b17e0a3a371db96dd49f"
+      }
+    }
+  ]
+}

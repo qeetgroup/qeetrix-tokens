@@ -1,5 +1,27 @@
 # @qeetrix/tokens
 
+## 0.0.12
+
+For the native libraries (QTRX-91), found moving qeetrix-android and qeetrix-ios onto
+`@qeetrix/react` 0.2.2, tokens 0.0.11 and icons 2.0.0. Nothing for the web changes.
+
+### Added
+
+- **The variable fonts as TrueType, for Android and iOS**, which load TTF or OTF but not WOFF2:
+  `fonts/QeetSans.ttf` (1.19 MB, all six axes: opsz, GEOM, wght, YTAS, SHRP, ital) and
+  `fonts/FiraCode-VF.ttf` (286 KB, wght 300–700). They're fontTools' decompression of the
+  published `QeetSans.woff2` and `FiraCode-VF.woff2` (`scripts/native-fonts.py`): every glyph and
+  axis kept, the same bytes on every run.
+- **`fonts/native.json`**: each TTF's family, axes, size, sha256 and licence, the sha256 of the
+  WOFF2 it came from, and the fontTools version. The native sync scripts pin these files by hash
+  and stop converting the WOFF2 themselves. A test fails if a WOFF2 changes and the TTFs aren't
+  written again.
+
+## 0.0.11
+
+Docs only: the README imports the stylesheet by its full path, `@qeetrix/tokens/tokens.css`
+(QTRX-26). No token or file changes.
+
 ## 0.0.10
 
 From the QTRX issues found on qeet.in, the new ui.qeet.in and the Qeet ID console.
