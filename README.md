@@ -116,8 +116,12 @@ characters a page shows: about 89 KB of Qeet Sans for English text. There's noth
 or opt out of.
 
 - **The files** are at `@qeetrix/tokens/fonts/*`, for `<link rel="preload">` (preload
-  `QeetSans-latin.woff2`) or native apps, which use the full variable `QeetSans.woff2` and
-  `FiraCode-VF.woff2`. `scripts/subset-fonts.py` cuts the subsets.
+  `QeetSans-latin.woff2`). `scripts/subset-fonts.py` cuts the subsets. The full variable fonts ship
+  too: `QeetSans.woff2` and `FiraCode-VF.woff2`.
+- **Android and iOS** load TrueType, not WOFF2: `fonts/QeetSans.ttf` (all six axes: opsz, GEOM,
+  wght, YTAS, SHRP, ital) and `fonts/FiraCode-VF.ttf` (wght). `fonts/native.json` lists each one's
+  axes, size and sha256, and the WOFF2 it was made from, so qeetrix-android and qeetrix-ios pin the
+  same files. `scripts/native-fonts.py` writes them.
 - **Licence:** both fonts are under the SIL Open Font Licence 1.1, shipped beside them
   (`fonts/*-OFL.txt`).
 - **Build support:** Vite, Next.js, webpack and Tailwind v4 inside them (`@tailwindcss/vite`,

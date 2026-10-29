@@ -2,7 +2,8 @@
  * The published contract: every exported path exists, only dist/ and the changelog ship, src/ holds
  * only authored files, and the JavaScript values equal the tokens they come from.
  */
-import { existsSync, readdirSync, statSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { describe, expect, it } from "vitest";
@@ -155,6 +156,7 @@ describe("fonts", () => {
     const files = readdirSync(join(root, "dist/fonts")).sort();
     expect(files).toEqual([
       "FiraCode-OFL.txt",
+      "FiraCode-VF.ttf",
       "FiraCode-VF.woff2",
       "FiraCode-latin-ext.woff2",
       "FiraCode-latin.woff2",
@@ -166,12 +168,75 @@ describe("fonts", () => {
       "QeetSans-latin-ext.woff2",
       "QeetSans-latin.woff2",
       "QeetSans-other.woff2",
+      "QeetSans.ttf",
       "QeetSans.woff2",
+      "native.json",
       "subsets.json",
     ]);
     for (const licence of files.filter((f) => f.endsWith("-OFL.txt"))) {
       expect(read(`dist/fonts/${licence}`)).toContain("SIL Open Font License, Version 1.1");
     }
+  });
+
+  it("ships the variable fonts as TrueType for Android and iOS, each pinned by its sha256 (QTRX-91)", () => {
+    interface NativeFont {
+      family: string;
+      file: string;
+      axes: { tag: string; min: number; default: number; max: number }[];
+      bytes: number;
+      sha256: string;
+      licence: string;
+      from: { file: string; sha256: string };
+    }
+    const native = readJson("dist/fonts/native.json") as { fontTools: string; fonts: NativeFont[] };
+    const file = (name: string) => readFileSync(join(root, "dist/fonts", name));
+    const sha256 = (data: Buffer) => createHash("sha256").update(data).digest("hex");
+    // The axes as the font itself declares them, in its fvar table (16.16 fixed-point values).
+    const axesOf = (font: Buffer) => {
+      const tables = font.readUInt16BE(4);
+      let fvar = 0;
+      for (let i = 0; i < tables; i++) {
+        if (font.toString("latin1", 12 + i * 16, 16 + i * 16) === "fvar") {
+          fvar = font.readUInt32BE(12 + i * 16 + 8);
+        }
+      }
+      const start = fvar + font.readUInt16BE(fvar + 4);
+      const size = font.readUInt16BE(fvar + 10);
+      return Array.from({ length: font.readUInt16BE(fvar + 8) }, (_, i) => {
+        const at = start + i * size;
+        const fixed = (offset: number) => font.readInt32BE(at + offset) / 65536;
+        return {
+          tag: font.toString("latin1", at, at + 4),
+          min: fixed(4),
+          default: fixed(8),
+          max: fixed(12),
+        };
+      });
+    };
+
+    expect(native.fontTools).toMatch(/^\d+\.\d+\.\d+$/);
+    expect(native.fonts.map((font) => [font.family, font.file])).toEqual([
+      ["Qeet Sans", "QeetSans.ttf"],
+      ["Fira Code", "FiraCode-VF.ttf"],
+    ]);
+    for (const font of native.fonts) {
+      const data = file(font.file);
+      expect(data.length).toBe(font.bytes);
+      expect(sha256(data)).toBe(font.sha256);
+      expect(data.readUInt32BE(0)).toBe(0x00010000); // TrueType outlines, not WOFF2
+      expect(axesOf(data)).toEqual(font.axes);
+      // A changed WOFF2 needs `python3 scripts/native-fonts.py` again, so the two stay one font.
+      expect(sha256(file(font.from.file))).toBe(font.from.sha256);
+      expect(read(`dist/fonts/${font.licence}`)).toContain("SIL Open Font License, Version 1.1");
+    }
+    expect(native.fonts[0]?.axes.map((axis) => axis.tag)).toEqual([
+      "opsz",
+      "GEOM",
+      "wght",
+      "YTAS",
+      "SHRP",
+      "ital",
+    ]);
   });
 
   it("names the families exactly as the tokens' font stacks do", () => {
