@@ -24,7 +24,7 @@ standard DTCG JSON and typed JavaScript for every Qeet product on web, iOS and A
 </div>
 
 ```css
-@import "@qeetrix/tokens";
+@import "@qeetrix/tokens/tokens.css";
 
 .card {
   background: var(--qx-color-surface-raised);
@@ -108,7 +108,7 @@ evergreen browser.
 
 ## 🔤 Fonts
 
-**The fonts come with the tokens.** `@import "@qeetrix/tokens"` declares **Qeet Sans** (Cal Sans,
+**The fonts come with the tokens.** `@import "@qeetrix/tokens/tokens.css"` declares **Qeet Sans** (Cal Sans,
 variable: weight 400–700, optical size and the GEOM letter style) and **Fira Code** (weight
 300–700). Each is declared as subsets (latin, latin-ext, other; Qeet Sans upright and italic apart),
 each with the `unicode-range` of what it holds, so a browser downloads only the files for the
@@ -129,13 +129,13 @@ or opt out of.
 **1. Import the stylesheet once**, at the root of your app:
 
 ```css
-@import "@qeetrix/tokens";
+@import "@qeetrix/tokens/tokens.css";
 ```
 
-In a CSS file, the package name is enough. CSS tools (Tailwind, Vite, webpack, PostCSS) pick
-the stylesheet, and JavaScript tools pick the JS exports. **To import the stylesheet from a
-JavaScript file**, such as a Next.js root layout, use the full path, because there the package
-name means the JS module:
+Use the full path, `@qeetrix/tokens/tokens.css`: it resolves in every bundler. The bare
+`@import "@qeetrix/tokens"` relies on the package's `style` condition, which Tailwind v4 reads but
+Vite's CSS `@import` doesn't (the build stops with `ENOENT`). **From a JavaScript file**, such as a
+Next.js root layout, use the full path too, because there the package name means the JS module:
 
 ```ts
 import "@qeetrix/tokens/tokens.css";
@@ -222,7 +222,7 @@ becomes `0ms`, so transitions built on the tokens stop by themselves.
 
 | Import | For | Contains |
 |---|---|---|
-| `@import "@qeetrix/tokens"` (in CSS)<br>`import "@qeetrix/tokens/tokens.css"` (in JS) | Web: React, Angular, Vue, plain HTML | Every public token as a CSS variable, one block per mode (breakpoints: `@qeetrix/tokens/custom-media.css`) |
+| `@import "@qeetrix/tokens/tokens.css"` (in CSS)<br>`import "@qeetrix/tokens/tokens.css"` (in JS) | Web: React, Angular, Vue, plain HTML | Every public token as a CSS variable, one block per mode (breakpoints: `@qeetrix/tokens/custom-media.css`) |
 | `@qeetrix/tokens` | JavaScript and TypeScript | `DURATION`, `EASING`, `SPRING`, `ICON_SIZE`, `ICON_STROKE`, `BREAKPOINT`, `COMPONENT`, `brandTheme()`, `TENANT_TOKENS` |
 | `@qeetrix/tokens/dtcg/light.tokens.json`<br>`@qeetrix/tokens/dtcg/dark.tokens.json` | iOS, Android, Figma, docs sites | Every token for one colour scheme at default density, as standard DTCG |
 | `@qeetrix/tokens/dtcg/qeetrix.resolver.json` | DTCG resolver tools | The source and its modes (colour scheme × density), exactly as authored |
