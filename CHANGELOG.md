@@ -1,5 +1,34 @@
 # @qeetrix/tokens
 
+## 0.0.10
+
+From the QTRX issues found on qeet.in, the new ui.qeet.in and the Qeet ID console.
+
+### Migrating from 0.0.9
+
+- **Breakpoints moved to their own sheet.** An app that uses `@media (--qx-viewport-*)` adds
+  `@import "@qeetrix/tokens/custom-media.css";` where its CSS build transpiles custom media.
+  Nothing else needs a change.
+
+### Changed
+
+- **The fonts load as subsets** (QTRX-10). Each face is cut into latin, latin-ext and other files
+  (scripts/subset-fonts.py), each declared with the `unicode-range` of exactly the characters it
+  holds, so a page downloads only what its text uses and no character falls through to a whole
+  font. The upright Latin Qeet Sans is 89 KB (the full variable file is 290 KB); its italic is its
+  own files, loaded only where italics show; YTAS and SHRP are pinned to their defaults, opsz,
+  GEOM and wght kept. Fira Code's Latin is 44 KB (was 113 KB). The full variable files still ship
+  in `fonts/` for other platforms; the latin cut includes ₹, €, the arrows and the keyboard
+  symbols.
+- **`tokens.css` is plain CSS** (QTRX-27): the `@custom-media` breakpoints are in
+  `@qeetrix/tokens/custom-media.css`, an opt-in sheet, so Lightning CSS (Vite 8) and other
+  pipelines accept `tokens.css` without warnings. The README shows the Vite setting.
+- **Categorical data-viz colours** (QTRX-37): slots 4 and 5 (purple, pink) are ΔEok 0.21 apart in
+  light and dark (were 0.15 and 0.10); every neighbour pair is at least 0.15 apart for normal
+  vision and 0.08 under deuteranopia, protanopia and tritanopia, green and amber included. Light
+  moves teal, purple, pink and green; dark moves all eight into OKLCH L 0.58–0.78 (amber 0.83;
+  six slots were 0.70–0.88), still 3:1 or more on every surface. A test holds the neighbours to it.
+
 ## 0.0.9
 
 - **New `size.icon.2xs`** (`--qx-size-icon-2xs`, `ICON_SIZE["2xs"]`): 12px, for marks inside 16–20px

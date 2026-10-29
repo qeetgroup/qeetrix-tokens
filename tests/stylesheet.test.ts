@@ -84,13 +84,16 @@ describe("mode blocks", () => {
 });
 
 describe("web conventions", () => {
-  it("publishes breakpoints as @custom-media, smallest first, never as variables", () => {
-    expect(css.match(/@custom-media --qx-viewport-[a-z]+ \(width >= \d+px\);/g)).toEqual([
+  it("publishes breakpoints as @custom-media in their own opt-in sheet, never as variables", () => {
+    const media = read("dist/custom-media.css");
+    expect(media.match(/@custom-media --qx-viewport-[a-z]+ \(width >= \d+px\);/g)).toEqual([
       "@custom-media --qx-viewport-medium (width >= 600px);",
       "@custom-media --qx-viewport-expanded (width >= 840px);",
       "@custom-media --qx-viewport-large (width >= 1200px);",
       "@custom-media --qx-viewport-xlarge (width >= 1600px);",
     ]);
+    // tokens.css is plain CSS every pipeline accepts quietly: no @custom-media (QTRX-27).
+    expect(css).not.toMatch(/@custom-media/);
     expect(css).not.toMatch(/--qx-breakpoint-/);
   });
 

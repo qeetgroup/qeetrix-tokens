@@ -110,10 +110,14 @@ evergreen browser.
 
 **The fonts come with the tokens.** `@import "@qeetrix/tokens"` declares **Qeet Sans** (Cal Sans,
 variable: weight 400–700, optical size and the GEOM letter style) and **Fira Code** (weight
-300–700). A browser downloads a font file only when text uses that family, so there's nothing extra
-to load or opt out of.
+300–700). Each is declared as subsets (latin, latin-ext, other; Qeet Sans upright and italic apart),
+each with the `unicode-range` of what it holds, so a browser downloads only the files for the
+characters a page shows: about 89 KB of Qeet Sans for English text. There's nothing extra to load
+or opt out of.
 
-- **The files** are at `@qeetrix/tokens/fonts/*`, for `<link rel="preload">` or native apps.
+- **The files** are at `@qeetrix/tokens/fonts/*`, for `<link rel="preload">` (preload
+  `QeetSans-latin.woff2`) or native apps, which use the full variable `QeetSans.woff2` and
+  `FiraCode-VF.woff2`. `scripts/subset-fonts.py` cuts the subsets.
 - **Licence:** both fonts are under the SIL Open Font Licence 1.1, shipped beside them
   (`fonts/*-OFL.txt`).
 - **Build support:** Vite, Next.js, webpack and Tailwind v4 inside them (`@tailwindcss/vite`,
@@ -218,7 +222,7 @@ becomes `0ms`, so transitions built on the tokens stop by themselves.
 
 | Import | For | Contains |
 |---|---|---|
-| `@import "@qeetrix/tokens"` (in CSS)<br>`import "@qeetrix/tokens/tokens.css"` (in JS) | Web: React, Angular, Vue, plain HTML | Every public token as a CSS variable, one block per mode, `@custom-media` breakpoints |
+| `@import "@qeetrix/tokens"` (in CSS)<br>`import "@qeetrix/tokens/tokens.css"` (in JS) | Web: React, Angular, Vue, plain HTML | Every public token as a CSS variable, one block per mode (breakpoints: `@qeetrix/tokens/custom-media.css`) |
 | `@qeetrix/tokens` | JavaScript and TypeScript | `DURATION`, `EASING`, `SPRING`, `ICON_SIZE`, `ICON_STROKE`, `BREAKPOINT`, `COMPONENT`, `brandTheme()`, `TENANT_TOKENS` |
 | `@qeetrix/tokens/dtcg/light.tokens.json`<br>`@qeetrix/tokens/dtcg/dark.tokens.json` | iOS, Android, Figma, docs sites | Every token for one colour scheme at default density, as standard DTCG |
 | `@qeetrix/tokens/dtcg/qeetrix.resolver.json` | DTCG resolver tools | The source and its modes (colour scheme × density), exactly as authored |
@@ -389,10 +393,19 @@ Native apps use springs: `motion.spring.snappy` (stiffness 400, damping ratio 0.
 | `--qx-z-skip-link` | 1900 | | |
 
 Breakpoints are the window size classes used on Android, and the same on web. They are published as
-`@custom-media`, because `var()` cannot be used inside a media query. That needs a CSS build step
-that understands custom media, such as Lightning CSS, PostCSS or Tailwind v4:
+`@custom-media`, because `var()` cannot be used inside a media query, in their own sheet,
+`@qeetrix/tokens/custom-media.css`, so `tokens.css` stays plain CSS that every pipeline accepts
+quietly. Import it only where your CSS build transpiles custom media (Lightning CSS, PostCSS,
+Tailwind v4). With Vite and Lightning CSS:
+
+```js
+// vite.config.js
+export default { css: { transformer: "lightningcss", lightningcss: { drafts: { customMedia: true } } } };
+```
 
 ```css
+@import "@qeetrix/tokens/custom-media.css";
+
 @media (--qx-viewport-expanded) {
   .layout { grid-template-columns: var(--qx-component-sidebar-width-expanded) 1fr; }
 }
