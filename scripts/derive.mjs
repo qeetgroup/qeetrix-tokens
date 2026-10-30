@@ -4,6 +4,12 @@
  * DTCG has no expressions, so a value that is computed from others — a dark-mode tint (one colour
  * mixed over a surface), a translucent layer (a colour at an alpha) — is written into the source as
  * a plain value, with its recipe beside it in $extensions["in.qeet.qeetrix"].derivation.
+ *
+ * A typography role's lineHeight is one too. DTCG makes it a ratio of the font size, but the decision
+ * is a length on the 4px grid ($extensions["in.qeet.qeetrix"].lineHeight), so the ratio is that
+ * length divided by the font size, written at full precision: fontSize × lineHeight is then exactly
+ * the length (QTRX-184), where a ratio rounded to 4 decimals gave 20.0004px.
+ *
  * tests/source.test.ts fails when a value no longer matches its recipe; this script rewrites them.
  * Run it after changing a primitive the recipes use:
  *
@@ -35,6 +41,10 @@ const colourAt = (ref) => {
   const { components, alpha } = find(ref.slice(1, -1)).$value;
   return { mode: "oklch", l: components[0], c: components[1], h: components[2], alpha: alpha ?? 1 };
 };
+
+/** A DTCG length, or a reference to one, in px at the default root size (1rem = 16px). */
+const lengthAt = (value) => (typeof value === "string" ? find(value.slice(1, -1)).$value : value);
+const px = ({ value, unit }) => (unit === "rem" ? value * 16 : value);
 
 const round = (n, d = 4) => Number(n.toFixed(d));
 const oklab = converter("oklab");
@@ -73,6 +83,14 @@ const visit = (node) => {
     }
     if (JSON.stringify(next) !== JSON.stringify(node.$value)) {
       node.$value = next;
+      changed++;
+    }
+  }
+  const lineHeight = node.$extensions?.[EXTENSION]?.lineHeight;
+  if (lineHeight) {
+    const ratio = px(lineHeight) / px(lengthAt(node.$value.fontSize));
+    if (node.$value.lineHeight !== ratio) {
+      node.$value.lineHeight = ratio;
       changed++;
     }
   }

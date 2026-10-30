@@ -18,7 +18,7 @@
     },
     "geometry": {
       "$type": "number",
-      "$description": "The GEOM axis value per role: display headlines in Qeet Sans's Geo letter style, headings in Base, and body and interface text in A11y, its most legible forms.",
+      "$description": "The GEOM axis value per role: display headlines in Qeet Sans's Geo letter style, headings in Base, and body and interface text in A11y, its most legible forms. Each typography role names the one it uses ($extensions[\"in.qeet.qeetrix\"].fontGeometry).",
       "display": {
         "$value": "{primitive.font.geometry.geo}"
       },
@@ -33,7 +33,7 @@
   },
   "typography": {
     "$type": "typography",
-    "$description": "Type roles. Every line height lands on the 4px grid; letter spacing stays 0 because Qeet Sans spaces each optical size itself, except in label.caps, where small capitals need room to read. Display uses the display geometry, heading and title the heading geometry, and body, label and code the body geometry.",
+    "$description": "Type roles. Every line height lands exactly on the 4px grid: $extensions[\"in.qeet.qeetrix\"].lineHeight is the line height as a length, and lineHeight, the ratio DTCG requires, is that length divided by fontSize at full precision, so fontSize × lineHeight is exactly the length (bun run derive writes it). Letter spacing stays 0 because Qeet Sans spaces each optical size itself, except in label.caps, where small capitals need room to read. $extensions[\"in.qeet.qeetrix\"].fontGeometry is the font.geometry token a role sets on Qeet Sans's GEOM axis: display the display geometry, heading and title the heading geometry, body, label and code the body geometry. A face with no GEOM axis, such as Fira Code, ignores it.",
     "display": {
       "lg": {
         "$value": {
@@ -44,7 +44,16 @@
             "value": 0,
             "unit": "px"
           },
-          "lineHeight": 1.1429
+          "lineHeight": 1.1428571428571428
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.display}",
+            "lineHeight": {
+              "value": 4,
+              "unit": "rem"
+            }
+          }
         }
       },
       "md": {
@@ -56,7 +65,16 @@
             "value": 0,
             "unit": "px"
           },
-          "lineHeight": 1.1667
+          "lineHeight": 1.1666666666666667
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.display}",
+            "lineHeight": {
+              "value": 3.5,
+              "unit": "rem"
+            }
+          }
         }
       },
       "sm": {
@@ -69,6 +87,15 @@
             "unit": "px"
           },
           "lineHeight": 1.2
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.display}",
+            "lineHeight": {
+              "value": 3,
+              "unit": "rem"
+            }
+          }
         }
       }
     },
@@ -83,6 +110,15 @@
             "unit": "px"
           },
           "lineHeight": 1.25
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.heading}",
+            "lineHeight": {
+              "value": 2.5,
+              "unit": "rem"
+            }
+          }
         }
       },
       "md": {
@@ -94,7 +130,16 @@
             "value": 0,
             "unit": "px"
           },
-          "lineHeight": 1.2857
+          "lineHeight": 1.2857142857142858
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.heading}",
+            "lineHeight": {
+              "value": 2.25,
+              "unit": "rem"
+            }
+          }
         }
       },
       "sm": {
@@ -106,7 +151,16 @@
             "value": 0,
             "unit": "px"
           },
-          "lineHeight": 1.3333
+          "lineHeight": 1.3333333333333333
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.heading}",
+            "lineHeight": {
+              "value": 2,
+              "unit": "rem"
+            }
+          }
         }
       }
     },
@@ -121,6 +175,15 @@
             "unit": "px"
           },
           "lineHeight": 1.4
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.heading}",
+            "lineHeight": {
+              "value": 1.75,
+              "unit": "rem"
+            }
+          }
         }
       },
       "md": {
@@ -132,7 +195,16 @@
             "value": 0,
             "unit": "px"
           },
-          "lineHeight": 1.3333
+          "lineHeight": 1.3333333333333333
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.heading}",
+            "lineHeight": {
+              "value": 1.5,
+              "unit": "rem"
+            }
+          }
         }
       },
       "sm": {
@@ -145,6 +217,15 @@
             "unit": "px"
           },
           "lineHeight": 1.5
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.heading}",
+            "lineHeight": {
+              "value": 1.5,
+              "unit": "rem"
+            }
+          }
         }
       }
     },
@@ -159,6 +240,15 @@
             "unit": "px"
           },
           "lineHeight": 1.5
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.body}",
+            "lineHeight": {
+              "value": 1.5,
+              "unit": "rem"
+            }
+          }
         }
       },
       "md": {
@@ -170,7 +260,16 @@
             "value": 0,
             "unit": "px"
           },
-          "lineHeight": 1.4286
+          "lineHeight": 1.4285714285714286
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.body}",
+            "lineHeight": {
+              "value": 1.25,
+              "unit": "rem"
+            }
+          }
         }
       },
       "sm": {
@@ -182,7 +281,16 @@
             "value": 0,
             "unit": "px"
           },
-          "lineHeight": 1.3333
+          "lineHeight": 1.3333333333333333
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.body}",
+            "lineHeight": {
+              "value": 1,
+              "unit": "rem"
+            }
+          }
         }
       }
     },
@@ -197,6 +305,15 @@
             "unit": "px"
           },
           "lineHeight": 1.5
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.body}",
+            "lineHeight": {
+              "value": 1.5,
+              "unit": "rem"
+            }
+          }
         }
       },
       "md": {
@@ -208,7 +325,16 @@
             "value": 0,
             "unit": "px"
           },
-          "lineHeight": 1.4286
+          "lineHeight": 1.4285714285714286
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.body}",
+            "lineHeight": {
+              "value": 1.25,
+              "unit": "rem"
+            }
+          }
         }
       },
       "sm": {
@@ -220,7 +346,16 @@
             "value": 0,
             "unit": "px"
           },
-          "lineHeight": 1.3333
+          "lineHeight": 1.3333333333333333
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.body}",
+            "lineHeight": {
+              "value": 1,
+              "unit": "rem"
+            }
+          }
         }
       },
       "caps": {
@@ -233,7 +368,16 @@
             "value": 0.66,
             "unit": "px"
           },
-          "lineHeight": 1.4545
+          "lineHeight": 1.4545454545454546
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.body}",
+            "lineHeight": {
+              "value": 1,
+              "unit": "rem"
+            }
+          }
         }
       }
     },
@@ -247,7 +391,16 @@
             "value": 0,
             "unit": "px"
           },
-          "lineHeight": 1.4286
+          "lineHeight": 1.4285714285714286
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.body}",
+            "lineHeight": {
+              "value": 1.25,
+              "unit": "rem"
+            }
+          }
         }
       },
       "sm": {
@@ -259,7 +412,16 @@
             "value": 0,
             "unit": "px"
           },
-          "lineHeight": 1.3333
+          "lineHeight": 1.3333333333333333
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.body}",
+            "lineHeight": {
+              "value": 1,
+              "unit": "rem"
+            }
+          }
         }
       }
     }

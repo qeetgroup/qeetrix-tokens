@@ -46,7 +46,7 @@ const onWeb = (id, token) => {
 const kebab = (s) => s.replace(/[A-Z]/g, (ch) => `-${ch.toLowerCase()}`);
 const block = (selector, lines) => `${selector} {\n${lines.map((l) => `  ${l}`).join("\n")}\n}\n`;
 const declare = (set, ids) =>
-  ids.flatMap((id) => declarationsFor(set[id])).map(([name, value]) => `${name}: ${value};`);
+  ids.flatMap((id) => declarationsFor(set[id], set)).map(([name, value]) => `${name}: ${value};`);
 
 // ---- fonts ---------------------------------------------------------------------
 // The two typefaces the tokens name, with their SIL Open Font Licences: Qeet Sans is Cal Sans
@@ -56,8 +56,8 @@ const declare = (set, ids) =>
 // the characters it holds, so a page downloads only what its text uses and no character pulls in
 // a whole font (QTRX-10). Qeet Sans is cut upright and italic, YTAS and SHRP pinned. The full
 // variable files ship too, for other platforms. The @font-face rules open tokens.css, so the one
-// import brings the fonts. The GEOM letter style is set per role by components
-// (--qx-font-geometry-*), not here: Safari ignores the font-variation-settings descriptor.
+// import brings the fonts. The GEOM letter style is set per role by components (each role's
+// --qx-typography-*-font-geometry), not here: Safari ignores the font-variation-settings descriptor.
 cpSync(fileURLToPath(new URL("fonts/", SRC)), `${OUT}fonts`, { recursive: true });
 const subsets = JSON.parse(readFileSync(new URL("fonts/subsets.json", SRC), "utf8"));
 const fontFaces = subsets
@@ -100,7 +100,8 @@ for (const [name, modifier] of modifiers) {
     resolver.apply({ ...defaults, [name]: context }),
   ]);
   const varying = publicIds.filter(
-    (id) => new Set(contexts.map(([, set]) => JSON.stringify(declarationsFor(set[id])))).size > 1,
+    (id) =>
+      new Set(contexts.map(([, set]) => JSON.stringify(declarationsFor(set[id], set)))).size > 1,
   );
   for (const [context, set] of contexts) {
     const extra = name === "colorScheme" ? [`color-scheme: ${context};`] : [];
@@ -200,7 +201,7 @@ function pick(prefix, map) {
   }
   return out;
 }
-const cssValue = (token) => declarationsFor(token)[0][1];
+const cssValue = (token) => declarationsFor(token, base)[0][1];
 const inPx = (token) => {
   if (token.$value.unit !== "px") throw new Error(`${token.id} must be in px for JavaScript`);
   return token.$value.value;

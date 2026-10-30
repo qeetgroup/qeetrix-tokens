@@ -26,7 +26,7 @@ describe(":root", () => {
     const expected = Object.keys(base)
       .filter(onWeb)
       .flatMap((id) =>
-        declarationsFor(base[id]).map((declaration: string[]) => declaration[0] as string),
+        declarationsFor(base[id], base).map((declaration: string[]) => declaration[0] as string),
       );
     expect([...root.keys()].sort()).toEqual(expected.sort());
     expect([...root.values()].filter((v) => v.includes("var("))).toEqual([]);
@@ -51,7 +51,7 @@ describe("mode blocks", () => {
       for (const [name, value] of scheme(s)) {
         const id = Object.keys(set).find((i) => cssVariable(i) === name);
         expect(id, name).toBeDefined();
-        expect(value, name).toBe(declarationsFor(set[id as string])[0][1]);
+        expect(value, name).toBe(declarationsFor(set[id as string], set)[0][1]);
       }
       expect(css).toContain(`[data-qx-color-scheme="${s}"] {\n  color-scheme: ${s};`);
     }
@@ -109,14 +109,63 @@ describe("web conventions", () => {
 
   it("writes typography as a font shorthand plus each property", () => {
     expect(root.get("--qx-typography-body-md")).toBe(
-      '400 0.875rem/1.4286 "Qeet Sans", ui-sans-serif, system-ui, sans-serif',
+      '400 0.875rem/1.428572 "Qeet Sans", ui-sans-serif, system-ui, sans-serif',
     );
-    expect(root.get("--qx-typography-body-md-line-height")).toBe("1.4286");
+    expect(root.get("--qx-typography-body-md-line-height")).toBe("1.428572");
+    expect(root.get("--qx-typography-body-md-font-geometry")).toBe("0");
+  });
+
+  // QTRX-184: a role lays out at exactly its line height, 20px and not 20.0004px or 19.984375px,
+  // through the shorthand, line-height and @qeetrix/react's calc(var(-font-size) * var(-line-height)).
+  // Browsers truncate a line box to 1/64px and WebKit reads the ratio in single precision, so the
+  // stylesheet's ratio is the exact one rounded up at the sixth decimal (scripts/lib/css.mjs).
+  const roles = [...root.keys()]
+    .filter((name) => name.endsWith("-line-height"))
+    .map((name) => name.slice(0, -"-line-height".length));
+  const px = (length: string) => Number.parseFloat(length) * (length.endsWith("rem") ? 16 : 1);
+  const toSixtyFourths = (n: number) => Math.floor(n * 64) / 64;
+
+  it("lays every role out at exactly its line height on the 4px grid", () => {
+    expect(roles).toHaveLength(18);
+    for (const id of Object.keys(base).filter((i) => base[i]?.$type === "typography")) {
+      const role = cssVariable(id);
+      const length = base[id]?.$extensions?.[EXTENSION]?.lineHeight as { value: number };
+      const height = length.value * 16;
+      const size = px(root.get(`${role}-font-size`) as string);
+      const ratio = Number(root.get(`${role}-line-height`));
+      const exact = height / size;
+      expect(height % 4, role).toBe(0);
+      // never under the exact ratio, so truncation lands on the pixel (measured in Chromium,
+      // Firefox and WebKit: the full double still left nine roles 1/64px short in WebKit) ...
+      expect(ratio, role).toBeGreaterThanOrEqual(exact);
+      expect(String(ratio).split(".")[1]?.length ?? 0, role).toBeLessThanOrEqual(6);
+      // ... and within 1e-6 of the DTCG document's ratio, which native generators check against
+      expect(ratio - exact, role).toBeLessThan(1e-6);
+      expect(toSixtyFourths(size * ratio), role).toBe(height);
+      expect(toSixtyFourths(Math.fround(Math.fround(size) * Math.fround(ratio))), role).toBe(
+        height,
+      );
+      expect(root.get(role), role).toContain(`/${ratio} `);
+    }
+  });
+
+  // QTRX-186: each role's GEOM position, so CSS can read it instead of restating design rules §5.
+  it("gives every role its letter style as -font-geometry", () => {
+    const geometry = (role: string) => root.get(`--qx-font-geometry-${role}`);
+    expect(geometry("display")).toBe("100");
+    expect(geometry("heading")).toBe("50");
+    expect(geometry("body")).toBe("0");
+    for (const role of roles) {
+      const group = role.slice("--qx-typography-".length).split("-")[0] as string;
+      const named =
+        group === "display" ? "display" : ["heading", "title"].includes(group) ? "heading" : "body";
+      expect(root.get(`${role}-font-geometry`), role).toBe(geometry(named));
+    }
   });
 
   it("tracks small capitals, and only them", () => {
     expect(root.get("--qx-typography-label-caps")).toBe(
-      '600 0.6875rem/1.4545 "Qeet Sans", ui-sans-serif, system-ui, sans-serif',
+      '600 0.6875rem/1.454546 "Qeet Sans", ui-sans-serif, system-ui, sans-serif',
     );
     expect(root.get("--qx-typography-label-caps-letter-spacing")).toBe("0.66px");
     const tracked = [...root.entries()].filter(

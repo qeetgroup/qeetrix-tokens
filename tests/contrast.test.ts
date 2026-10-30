@@ -65,6 +65,9 @@ const AA_PAIRS: [string, string, number][] = [
     ["color.bg.brand.bold", "color.bg.brand.bold-hover", "color.bg.brand.bold-pressed"],
     4.5,
   ),
+  // a checked checkbox, radio, switch or slider thumb is the brand fill, at rest and hovered, on
+  // whatever surface it sits on, menus and dialogs included (QTRX-187). Pressed is momentary.
+  ...pairs(["color.bg.brand.bold", "color.bg.brand.bold-hover"], SURFACES, 3),
   ...pairs(
     ["color.text.on-bold"],
     [
@@ -205,5 +208,54 @@ describe.each(SCHEMES.map((s) => [s]))("%s", (scheme) => {
     expect(AA_PAIRS.length).toBeGreaterThan(200);
     expect(INTERACTION_FILLS).toHaveLength(8);
     expect(failures).toEqual([]);
+  });
+});
+
+/**
+ * Rules aren't held to a WCAG minimum, but they must show. In light, border.subtle is 1.20:1 on the
+ * white surfaces and border.default 1.30:1; dark held neither on surface.overlay, its lightest
+ * surface, where border.subtle equalled the fill (1.00:1) and border.default was 1.10:1 (QTRX-183).
+ */
+describe("rules and the brand hover", () => {
+  const ratio = (scheme: string, fg: string, bg: string) => {
+    const set = tokensFor({ colorScheme: scheme });
+    const colour = (id: string) => toCulori(set[id]?.$value as DtcgColor);
+    return wcagContrast(colour(fg), colour(bg));
+  };
+  const on = ["overlay", "raised", "default"].map((s) => `color.surface.${s}`);
+  const at = (scheme: string, fg: string) => on.map((bg) => ratio(scheme, fg, bg).toFixed(2));
+
+  it.each(SCHEMES.map((s) => [s]))(
+    "keeps border.subtle visible on every surface in %s, and border.default stronger",
+    (scheme) => {
+      for (const bg of on) {
+        expect(ratio(scheme, "color.border.subtle", bg), bg).toBeGreaterThanOrEqual(1.2);
+      }
+      for (const bg of SURFACES) {
+        expect(ratio(scheme, "color.border.default", bg), bg).toBeGreaterThan(
+          ratio(scheme, "color.border.subtle", bg),
+        );
+      }
+    },
+  );
+
+  it("draws the dark rules one tone step apart, as light does (QTRX-183)", () => {
+    // on overlay, raised and default: light is 1.20 and 1.30 on each
+    expect(at("dark", "color.border.subtle")).toEqual(["1.22", "1.30", "1.37"]);
+    expect(at("dark", "color.border.default")).toEqual(["1.42", "1.51", "1.58"]);
+  });
+
+  it("keeps a hovered checked control at 3:1 on the dark overlays, with its white label (QTRX-187)", () => {
+    // qeet.700, the hover before, was 2.93, 3.11 and 3.27
+    expect(at("dark", "color.bg.brand.bold-hover")).toEqual(["3.31", "3.52", "3.70"]);
+    for (const scheme of SCHEMES) {
+      expect(
+        ratio(scheme, "color.text.on-brand", "color.bg.brand.bold-hover"),
+        scheme,
+      ).toBeGreaterThanOrEqual(4.5);
+    }
+    expect(ratio("dark", "color.text.on-brand", "color.bg.brand.bold-hover").toFixed(2)).toBe(
+      "5.04",
+    );
   });
 });

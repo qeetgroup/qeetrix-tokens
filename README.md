@@ -263,7 +263,7 @@ interactive ones also have `-hover` and `-pressed` states.
 | `--qx-color-text-subtle` | ![#484747](https://img.shields.io/badge/%23484747-484747?style=flat-square) | ![#d1cfce](https://img.shields.io/badge/%23d1cfce-d1cfce?style=flat-square) |
 | `--qx-color-surface-default` | ![#ffffff](https://img.shields.io/badge/%23ffffff-ffffff?style=flat-square) | ![#131312](https://img.shields.io/badge/%23131312-131312?style=flat-square) |
 | `--qx-color-surface-canvas` | ![#fbfaf9](https://img.shields.io/badge/%23fbfaf9-fbfaf9?style=flat-square) | ![#0e0d0d](https://img.shields.io/badge/%230e0d0d-0e0d0d?style=flat-square) |
-| `--qx-color-border-default` | ![#e3e1e0](https://img.shields.io/badge/%23e3e1e0-e3e1e0?style=flat-square) | ![#262625](https://img.shields.io/badge/%23262625-262625?style=flat-square) |
+| `--qx-color-border-default` | ![#e3e1e0](https://img.shields.io/badge/%23e3e1e0-e3e1e0?style=flat-square) | ![#383837](https://img.shields.io/badge/%23383837-383837?style=flat-square) |
 | `--qx-color-bg-danger-bold` | ![#be2334](https://img.shields.io/badge/%23be2334-be2334?style=flat-square) | ![#be2334](https://img.shields.io/badge/%23be2334-be2334?style=flat-square) |
 | `--qx-color-bg-success-bold` | ![#017e51](https://img.shields.io/badge/%23017e51-017e51?style=flat-square) | ![#017e51](https://img.shields.io/badge/%23017e51-017e51?style=flat-square) |
 | `--qx-color-bg-warning-bold` | ![#efad1d](https://img.shields.io/badge/%23efad1d-efad1d?style=flat-square) | ![#efad1d](https://img.shields.io/badge/%23efad1d-efad1d?style=flat-square) |
@@ -290,7 +290,15 @@ interactive ones also have `-hover` and `-pressed` states.
 ### Typography
 
 `--qx-typography-<role>-<size>` is a complete `font` shorthand. Each part is also available on its
-own as `-font-family`, `-font-size`, `-font-weight`, `-line-height` and `-letter-spacing`.
+own as `-font-family`, `-font-size`, `-font-weight`, `-line-height` and `-letter-spacing`, and
+`-font-geometry` holds the role's letter style, which a `font` shorthand can't carry:
+
+```css
+.title {
+  font: var(--qx-typography-title-md);
+  font-variation-settings: "GEOM" var(--qx-typography-title-md-font-geometry);
+}
+```
 
 | Role | lg | md | sm | Weight | For |
 |---|:---:|:---:|:---:|:---:|---|
@@ -306,12 +314,17 @@ One more role stands apart: **`--qx-typography-label-caps`**, 11 / 16 at weight 
 table column groups, panel sections. Set `text-transform: uppercase` with it. It's the only role
 with letter spacing; Qeet Sans spaces every other size itself.
 
-Sizes are font size / line height in px, and every line height sits on the 4px grid. Sizes are
-published in `rem`, so they follow the user's browser font size. Qeet Sans's geometry axis sets
-the letterforms for each role:
+Sizes are font size / line height in px, and every line height sits exactly on the 4px grid. Sizes
+are published in `rem`, so they follow the user's browser font size. `-line-height` is a unitless
+ratio, rounded up at the sixth decimal (`1.428572` for 20 / 14), so a browser, which truncates a
+line box to a fraction of a pixel, lays every role out at exactly its line height: 20px, not
+20.0004px or 19.984375px. That holds for the shorthand, `line-height` and
+`calc(var(-font-size) * var(-line-height))`, in Chromium, Firefox and WebKit. Qeet Sans's geometry
+axis sets the letterforms for each role, in `-font-geometry`:
 - display headlines use Geo (`--qx-font-geometry-display`, 100);
 - headings and titles use Base (`--qx-font-geometry-heading`, 50);
-- body, labels and code use A11y, the most legible forms (`--qx-font-geometry-body`, 0).
+- body, labels and code use A11y, the most legible forms (`--qx-font-geometry-body`, 0). Fira
+  Code has no GEOM axis and ignores it.
 
 `--qx-font-family-indic` is a Noto stack for Indian scripts.
 
@@ -553,6 +566,13 @@ Put `css` in a `<style>` element. To set a single element instead, use
   `TypeError` for anything else. Every value it returns is a colour it computed itself, so the
   output is safe to put in a style element.
 
+**Known gap:** the brand fill against the surface, the 3:1 a checked checkbox, radio or switch
+needs, isn't guaranteed yet for a tenant's colour. Qeet's own tokens meet it in both schemes:
+since 0.0.13 the dark hover is qeet.650, 3.31:1 on `surface-overlay` (QTRX-187). `brandTheme()`
+still makes the hover the fill darkened by 0.055 lightness in both schemes, so in dark a hovered
+checked control can fall under 3:1 on an overlay: `brandTheme("#d04800")` gives 2.92:1. A fill too
+dark for the dark surfaces isn't caught either.
+
 ## ⚡ JavaScript
 
 For values that code needs: animation, media queries, native bridges and canvas.
@@ -589,6 +609,12 @@ contains every token for one colour scheme at default density.
   `{ "value": 200, "unit": "ms" }`.
 - **References are kept.** `color.bg.brand.bold` points to `{primitive.color.qeet.600}`, so the
   link between primitive and semantic tokens survives into Figma Variables.
+- **Typography roles** carry two more facts in `$extensions["in.qeet.qeetrix"]`: `lineHeight`, the
+  line height as a length (`{ "value": 1.25, "unit": "rem" }` for `body.md`), for a platform that
+  sets line height in points or sp; and `fontGeometry`, the `font.geometry` token the role uses
+  (`"{font.geometry.body}"`). The composite's own `lineHeight` is that length divided by the font
+  size at full precision (`1.4285714285714286`), so `fontSize × lineHeight` is exactly 20 in
+  double and single precision.
 
 ```json
 "bg": {

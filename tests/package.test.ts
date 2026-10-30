@@ -78,6 +78,7 @@ describe("JavaScript values", () => {
       stiffness: value("motion.spring.snappy.stiffness"),
     });
     expect(m.COMPONENT.sidebar.width.expanded).toBe("16rem");
+    expect(m.COMPONENT.timeline.markerSize).toBe("28px"); // QTRX-185: a fixed size, as the CSS draws it
     expect(typeof m.brandTheme).toBe("function");
     expect(m.TENANT_TOKENS).toContain(cssVariable("color.bg.brand.bold"));
   });

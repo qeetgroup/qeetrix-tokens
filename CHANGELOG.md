@@ -1,5 +1,68 @@
 # @qeetrix/tokens
 
+## 0.0.13
+
+From the QTRX issues found moving qeetrix-android onto `@qeetrix/react` 0.3.0, tokens 0.0.12 and
+icons 2.0.0. Nothing is removed or renamed, and every existing output keeps its shape.
+
+### Fixed
+
+- **Dark rules show on menus, drawers, popovers and dialogs** (QTRX-183). Dark `border.subtle`
+  was `graphite.875`, the same colour as `surface.overlay` (1.00:1), so separators in Menu, Drawer,
+  Popover, Select and the command palette, and those overlays' own borders, vanished. Dark
+  `border.subtle` is now `graphite.800` and `border.default` `graphite.750` (were 875 and 825).
+  Each moved, so `border.subtle` stays the weaker of the two and dark relates its rules to its
+  neutral fills as light does: light's `border.subtle` and `border.default` are its
+  `bg.neutral.subtle-hover` and `-pressed` steps (150, 200), and dark's now are too (800, 750).
+  Light and `border.disabled` are unchanged. Contrast on overlay / raised / default:
+  - `border.subtle`: 1.00 / 1.06 / 1.12 → **1.22 / 1.30 / 1.37** (light: 1.20 on each);
+  - `border.default`: 1.10 / 1.17 / 1.23 → **1.42 / 1.51 / 1.58** (light: 1.30 on each), so dark
+    card borders are firmer than before.
+- **A hovered checked control keeps 3:1 in dark overlays** (QTRX-187). Dark `bg.brand.bold-hover`
+  was `qeet.700`, 2.93:1 on `surface.overlay`, so a hovered checked checkbox, radio, switch or slider
+  thumb in a menu or dialog fell under 3:1. It's now a new primitive, `qeet.650`
+  (oklch 0.56 0.175 39, `#c5430a`), used by the dark scheme only: 3.31 / 3.52 / 3.70 on overlay /
+  raised / default (were 2.93 / 3.11 / 3.27), and white text on it 5.04:1 (was 5.70), so a hovered
+  primary button and a hovered selected day still read. A lighter hover would drop the white label
+  under 4.5:1. Light's hover stays `qeet.700`, and dark pressed stays `qeet.800`. The brand fill
+  at rest and hovered now has a 3:1 contrast test on every surface in both schemes.
+  - **Known gap, not changed:** `brandTheme()` still makes a tenant's hover the fill darkened by
+    0.055 lightness in both schemes, and doesn't hold the fill to 3:1 against the dark surfaces, so
+    a tenant's hovered checked control can fall under 3:1 on a dark overlay. Its result for Qeet's
+    own `#d04800` is 2.92:1. A follow-up.
+- **Every line height lands exactly on the 4px grid** (QTRX-184). The typography composites carried
+  `lineHeight` as a ratio rounded to 4 decimals, so `body.md` was 14 × 1.4286 = 20.0004px,
+  `display.lg` 64.0024px, `heading.md` 35.9996px and `label.caps` 15.9995px, and Compose, which
+  rounds a line height up, drew 21px. The line height is now authored as a length on the grid
+  (`$extensions["in.qeet.qeetrix"].lineHeight`, e.g. `{ "value": 1.25, "unit": "rem" }`), and the
+  ratio DTCG requires is that length divided by the font size at full precision
+  (`1.4285714285714286`), written by `bun run derive`: in the DTCG documents `fontSize ×
+  lineHeight` is exactly 16, 20, 24 … 64 in double and single precision.
+  - **`tokens.css`** writes the ratio rounded *up* at the sixth decimal (`1.428572`), still
+    unitless, so `calc(var(-font-size) * var(-line-height))` keeps working. Browsers truncate a
+    line box to 1/64px, and WebKit computes it in single precision, so 4-decimal ratios laid out
+    1/64px short in Chromium (7 roles) and WebKit (7 through the shorthand; 12 off the grid through
+    `calc()`), and even the full double left 9 roles short in WebKit. Now all 18 roles lay out at
+    exactly their line height in Chromium, Firefox and WebKit (measured), through the shorthand,
+    `line-height` and `calc()`. The ratio stays within 1e-6 of the DTCG one.
+  - Twelve roles change; `display.sm`, `heading.lg`, `title.lg`, `title.sm`, `body.lg` and
+    `label.lg` were already exact.
+- **`component.timeline.marker-size` is 28px** (QTRX-185), as `@qeetrix/react`'s timeline and
+  07-components draw it; it was 1.5rem (24px). In px, not rem: the marker is a fixed frame around a
+  16px icon, and icon sizes are px, so in rem the marker would grow with the root font size while
+  its icon didn't. `COMPONENT.timeline.markerSize` is `"28px"`.
+
+### Added
+
+- **Each typography role's letter style, as data** (QTRX-186). Every composite names its
+  `font.geometry` token in `$extensions["in.qeet.qeetrix"].fontGeometry`: display
+  `{font.geometry.display}` (100), heading and title `{font.geometry.heading}` (50), body, label
+  and code `{font.geometry.body}` (0; Fira Code has no GEOM axis and ignores it). `tokens.css`
+  publishes it per role as `--qx-typography-<role>-<size>-font-geometry`, for
+  `font-variation-settings: "GEOM" var(…)`. It was prose only, so each CSS family and native
+  generator restated design rules §5. Nothing existing changes: the `font` shorthand can't carry a
+  variation, and `--qx-font-geometry-*` stay.
+
 ## 0.0.12
 
 For the native libraries (QTRX-91), found moving qeetrix-android and qeetrix-ios onto
