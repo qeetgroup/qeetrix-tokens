@@ -60,10 +60,10 @@
     "timeline": {
       "marker-size": {
         "$value": {
-          "value": 1.5,
-          "unit": "rem"
+          "value": 28,
+          "unit": "px"
         },
-        "$description": "Timeline event markers."
+        "$description": "Timeline event markers: a 28px square around a 16px icon (size.icon.sm). In px like the icon sizes, so the marker and its icon keep their proportions when the root font size changes."
       }
     }
   }

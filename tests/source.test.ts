@@ -15,7 +15,9 @@ import {
   resolver,
   SCHEMES,
   sourceFiles,
+  type Token,
   toCulori,
+  tokensFor,
 } from "./support";
 
 const files = sourceFiles();
@@ -228,6 +230,51 @@ describe("derived values", () => {
       });
     },
   );
+});
+
+describe("typography", () => {
+  type Length = { value: number; unit: string };
+  const set = tokensFor();
+  const roles = Object.values(set).filter((t) => t.$type === "typography");
+  const ours = (t: Token) =>
+    t.$extensions?.[EXTENSION] as { fontGeometry?: string; lineHeight?: Length } | undefined;
+  const px = ({ value, unit }: Length) => (unit === "rem" ? value * 16 : value);
+
+  // QTRX-184. DTCG requires lineHeight to be a ratio; the decision is the length beside it.
+  it("lands every line height exactly on the 4px grid, in double and single precision", () => {
+    expect(roles).toHaveLength(18);
+    for (const t of roles) {
+      const { fontSize, lineHeight } = t.$value as { fontSize: Length; lineHeight: number };
+      const length = ours(t)?.lineHeight as Length;
+      expect(length, t.id).toBeDefined();
+      expect(length.unit, t.id).toBe(fontSize.unit);
+      const target = px(length);
+      expect(target % 4, t.id).toBe(0);
+      // the recipe scripts/derive.mjs writes: no rounding, so nothing for a platform to round
+      expect(lineHeight, t.id).toBe(target / px(fontSize));
+      expect(px(fontSize) * lineHeight, t.id).toBe(target);
+      expect(Math.fround(Math.fround(px(fontSize)) * Math.fround(lineHeight)), t.id).toBe(target);
+    }
+  });
+
+  // QTRX-186. The role-to-GEOM pairing of design rules §5, as data.
+  it("names each role's letter style, a font.geometry token, as design rules §5 pairs them", () => {
+    const geometry: Record<string, string> = {
+      display: "display",
+      heading: "heading",
+      title: "heading",
+      body: "body",
+      label: "body",
+      code: "body",
+    };
+    for (const t of roles) {
+      const role = t.id.split(".")[1] as string;
+      expect(ours(t)?.fontGeometry, t.id).toBe(`{font.geometry.${geometry[role]}}`);
+    }
+    expect(["display", "heading", "body"].map((g) => set[`font.geometry.${g}`]?.$value)).toEqual([
+      100, 50, 0,
+    ]);
+  });
 });
 
 describe("metadata", () => {

@@ -108,7 +108,7 @@
           }
         },
         "bold-hover": {
-          "$value": "{primitive.color.qeet.700}",
+          "$value": "{primitive.color.qeet.650}",
           "$extensions": {
             "in.qeet.qeetrix": {
               "tenantOverridable": true
@@ -386,10 +386,10 @@
     "border": {
       "$description": "Borders and dividers. border.strong is the control boundary and meets 3:1 (WCAG 1.4.11); so do the status borders, on every surface and on their own subtle fill.",
       "default": {
-        "$value": "{primitive.color.graphite.825}"
+        "$value": "{primitive.color.graphite.750}"
       },
       "subtle": {
-        "$value": "{primitive.color.graphite.875}"
+        "$value": "{primitive.color.graphite.800}"
       },
       "strong": {
         "$value": "{primitive.color.graphite.450}"
