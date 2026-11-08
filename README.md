@@ -774,8 +774,8 @@ bun run derive          # recompute derived colours after changing a palette
 Rules, layout and what CI enforces are in [AGENTS.md](AGENTS.md). To report a vulnerability, see
 [SECURITY.md](SECURITY.md).
 
-**Releases.** Opening a pull request bumps the patch version on the branch. Merging to `main`
-publishes to npm with provenance, tags `vX.Y.Z` and opens a GitHub Release. `rollback.yml` moves
+**Releases.** Raise `version` on `develop`, then open the `develop` → `main` pull request; its Version check
+fails until the version is above `main`'s. Merging to `main` publishes to npm with provenance, tags `vX.Y.Z` and opens a GitHub Release. `rollback.yml` moves
 `latest` back to an earlier version if a release goes wrong.
 
 ## ⚖️ License
