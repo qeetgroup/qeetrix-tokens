@@ -92,7 +92,7 @@ describe("web conventions", () => {
       "@custom-media --qx-viewport-large (width >= 1200px);",
       "@custom-media --qx-viewport-xlarge (width >= 1600px);",
     ]);
-    // tokens.css is plain CSS every pipeline accepts quietly: no @custom-media (QTRX-27).
+    // tokens.css is plain CSS every pipeline accepts quietly: no @custom-media.
     expect(css).not.toMatch(/@custom-media/);
     expect(css).not.toMatch(/--qx-breakpoint-/);
   });
@@ -115,7 +115,7 @@ describe("web conventions", () => {
     expect(root.get("--qx-typography-body-md-font-geometry")).toBe("0");
   });
 
-  // QTRX-184: a role lays out at exactly its line height, 20px and not 20.0004px or 19.984375px,
+  // A role lays out at exactly its line height, 20px and not 20.0004px or 19.984375px,
   // through the shorthand, line-height and @qeetrix/react's calc(var(-font-size) * var(-line-height)).
   // Browsers truncate a line box to 1/64px and WebKit reads the ratio in single precision, so the
   // stylesheet's ratio is the exact one rounded up at the sixth decimal (scripts/lib/css.mjs).
@@ -149,7 +149,7 @@ describe("web conventions", () => {
     }
   });
 
-  // QTRX-186: each role's GEOM position, so CSS can read it instead of restating design rules §5.
+  // Each role's GEOM position, so CSS can read it instead of restating design rules §5.
   it("gives every role its letter style as -font-geometry", () => {
     const geometry = (role: string) => root.get(`--qx-font-geometry-${role}`);
     expect(geometry("display")).toBe("100");

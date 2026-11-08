@@ -1,13 +1,47 @@
 # @qeetrix/tokens
 
+## Unreleased
+
+### Added
+
+- **`color.bg.danger.subtle-pressed`**: the danger tint's pressed step, so a ghost danger
+  button's press no longer looks the same as its hover. Light is `bg.danger.subtle` with 4% of black
+  mixed in (`#f3dedf`), dark the danger tint mixed 8 points stronger (`#412020`), as
+  `bg.brand.subtle-pressed` sits past `bg.brand.subtle`. `text.danger` keeps 4.5:1 on it and
+  `icon.danger` 3:1, in both schemes; both pairs are in the contrast tests. A new token: a patch.
+- **`font.family.text` and `font.family.cjk`**: `--qx-font-family-text` is one stack for
+  text in any language Qeet products ship — Qeet Sans, the Noto face of each Indian script, Noto Sans
+  JP and SC, the platforms' Japanese and Chinese fonts, then the generic families only at its end — so
+  no product chains stacks and puts the system font before the Indian faces.
+  `--qx-font-family-cjk` is Japanese and Chinese on their own. The README's fonts section says which
+  to use. New tokens: a patch.
+
+### Changed
+
+- **`--qx-font-family-indic` adds Noto Sans Malayalam and Noto Sans Oriya**: Malayalam is
+  one of Qeet Circle's launch languages, Odia a candidate. `font.family.sans`, `heading` and the
+  typography roles are unchanged: they keep Qeet Sans's own stack.
+
+### Fixed
+
+- **`brandTheme()`'s checked fill, in both schemes**: the fill and its hover keep 3:1 on the
+  surfaces a checked control sits on — every light surface; `surface.default`, raised and overlay in
+  dark — with the label at 4.5:1, as Qeet's own qeet.650 hover does. The hover had been the fill
+  darkened by 0.055 lightness in both schemes, 2.92:1 on a dark overlay for `brandTheme("#d04800")`,
+  and a pale tenant colour's fill (a pale pink, a peach) was under 3:1 on white. Now a pale fill is
+  darkened just enough in light, keeping its hue and its near-black label; a fill too dark for the
+  dark surfaces is lightened just enough in dark; and where a hover's step would lose the surfaces it
+  takes the largest step that keeps both, so it always shows. Fills that already clear the surfaces,
+  Qeet's own included, are unchanged.
+
 ## 0.0.13
 
-From the QTRX issues found moving qeetrix-android onto `@qeetrix/react` 0.3.0, tokens 0.0.12 and
+From the issues found moving qeetrix-android onto `@qeetrix/react` 0.3.0, tokens 0.0.12 and
 icons 2.0.0. Nothing is removed or renamed, and every existing output keeps its shape.
 
 ### Fixed
 
-- **Dark rules show on menus, drawers, popovers and dialogs** (QTRX-183). Dark `border.subtle`
+- **Dark rules show on menus, drawers, popovers and dialogs**. Dark `border.subtle`
   was `graphite.875`, the same colour as `surface.overlay` (1.00:1), so separators in Menu, Drawer,
   Popover, Select and the command palette, and those overlays' own borders, vanished. Dark
   `border.subtle` is now `graphite.800` and `border.default` `graphite.750` (were 875 and 825).
@@ -18,7 +52,7 @@ icons 2.0.0. Nothing is removed or renamed, and every existing output keeps its 
   - `border.subtle`: 1.00 / 1.06 / 1.12 → **1.22 / 1.30 / 1.37** (light: 1.20 on each);
   - `border.default`: 1.10 / 1.17 / 1.23 → **1.42 / 1.51 / 1.58** (light: 1.30 on each), so dark
     card borders are firmer than before.
-- **A hovered checked control keeps 3:1 in dark overlays** (QTRX-187). Dark `bg.brand.bold-hover`
+- **A hovered checked control keeps 3:1 in dark overlays**. Dark `bg.brand.bold-hover`
   was `qeet.700`, 2.93:1 on `surface.overlay`, so a hovered checked checkbox, radio, switch or slider
   thumb in a menu or dialog fell under 3:1. It's now a new primitive, `qeet.650`
   (oklch 0.56 0.175 39, `#c5430a`), used by the dark scheme only: 3.31 / 3.52 / 3.70 on overlay /
@@ -30,7 +64,7 @@ icons 2.0.0. Nothing is removed or renamed, and every existing output keeps its 
     0.055 lightness in both schemes, and doesn't hold the fill to 3:1 against the dark surfaces, so
     a tenant's hovered checked control can fall under 3:1 on a dark overlay. Its result for Qeet's
     own `#d04800` is 2.92:1. A follow-up.
-- **Every line height lands exactly on the 4px grid** (QTRX-184). The typography composites carried
+- **Every line height lands exactly on the 4px grid**. The typography composites carried
   `lineHeight` as a ratio rounded to 4 decimals, so `body.md` was 14 × 1.4286 = 20.0004px,
   `display.lg` 64.0024px, `heading.md` 35.9996px and `label.caps` 15.9995px, and Compose, which
   rounds a line height up, drew 21px. The line height is now authored as a length on the grid
@@ -47,14 +81,14 @@ icons 2.0.0. Nothing is removed or renamed, and every existing output keeps its 
     `line-height` and `calc()`. The ratio stays within 1e-6 of the DTCG one.
   - Twelve roles change; `display.sm`, `heading.lg`, `title.lg`, `title.sm`, `body.lg` and
     `label.lg` were already exact.
-- **`component.timeline.marker-size` is 28px** (QTRX-185), as `@qeetrix/react`'s timeline and
+- **`component.timeline.marker-size` is 28px**, as `@qeetrix/react`'s timeline and
   07-components draw it; it was 1.5rem (24px). In px, not rem: the marker is a fixed frame around a
   16px icon, and icon sizes are px, so in rem the marker would grow with the root font size while
   its icon didn't. `COMPONENT.timeline.markerSize` is `"28px"`.
 
 ### Added
 
-- **Each typography role's letter style, as data** (QTRX-186). Every composite names its
+- **Each typography role's letter style, as data**. Every composite names its
   `font.geometry` token in `$extensions["in.qeet.qeetrix"].fontGeometry`: display
   `{font.geometry.display}` (100), heading and title `{font.geometry.heading}` (50), body, label
   and code `{font.geometry.body}` (0; Fira Code has no GEOM axis and ignores it). `tokens.css`
@@ -65,7 +99,7 @@ icons 2.0.0. Nothing is removed or renamed, and every existing output keeps its 
 
 ## 0.0.12
 
-For the native libraries (QTRX-91), found moving qeetrix-android and qeetrix-ios onto
+For the native libraries, found moving qeetrix-android and qeetrix-ios onto
 `@qeetrix/react` 0.2.2, tokens 0.0.11 and icons 2.0.0. Nothing for the web changes.
 
 ### Added
@@ -82,12 +116,12 @@ For the native libraries (QTRX-91), found moving qeetrix-android and qeetrix-ios
 
 ## 0.0.11
 
-Docs only: the README imports the stylesheet by its full path, `@qeetrix/tokens/tokens.css`
-(QTRX-26). No token or file changes.
+Docs only: the README imports the stylesheet by its full path, `@qeetrix/tokens/tokens.css`.
+No token or file changes.
 
 ## 0.0.10
 
-From the QTRX issues found on qeet.in, the new ui.qeet.in and the Qeet ID console.
+From the issues found on qeet.in, the new ui.qeet.in and the Qeet ID console.
 
 ### Migrating from 0.0.9
 
@@ -97,7 +131,7 @@ From the QTRX issues found on qeet.in, the new ui.qeet.in and the Qeet ID consol
 
 ### Changed
 
-- **The fonts load as subsets** (QTRX-10). Each face is cut into latin, latin-ext and other files
+- **The fonts load as subsets**. Each face is cut into latin, latin-ext and other files
   (scripts/subset-fonts.py), each declared with the `unicode-range` of exactly the characters it
   holds, so a page downloads only what its text uses and no character falls through to a whole
   font. The upright Latin Qeet Sans is 89 KB (the full variable file is 290 KB); its italic is its
@@ -105,10 +139,10 @@ From the QTRX issues found on qeet.in, the new ui.qeet.in and the Qeet ID consol
   GEOM and wght kept. Fira Code's Latin is 44 KB (was 113 KB). The full variable files still ship
   in `fonts/` for other platforms; the latin cut includes ₹, €, the arrows and the keyboard
   symbols.
-- **`tokens.css` is plain CSS** (QTRX-27): the `@custom-media` breakpoints are in
+- **`tokens.css` is plain CSS**: the `@custom-media` breakpoints are in
   `@qeetrix/tokens/custom-media.css`, an opt-in sheet, so Lightning CSS (Vite 8) and other
   pipelines accept `tokens.css` without warnings. The README shows the Vite setting.
-- **Categorical data-viz colours** (QTRX-37): slots 4 and 5 (purple, pink) are ΔEok 0.21 apart in
+- **Categorical data-viz colours**: slots 4 and 5 (purple, pink) are ΔEok 0.21 apart in
   light and dark (were 0.15 and 0.10); every neighbour pair is at least 0.15 apart for normal
   vision and 0.08 under deuteranopia, protanopia and tritanopia, green and amber included. Light
   moves teal, purple, pink and green; dark moves all eight into OKLCH L 0.58–0.78 (amber 0.83;

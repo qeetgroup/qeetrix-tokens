@@ -8,7 +8,11 @@
  *
  *   - the label on the brand fill reaches 4.5:1 — white, or near-black for a light brand colour;
  *     a mid-tone colour that carries neither is darkened until white does;
- *   - hover and pressed step away from the label colour, so they only gain contrast;
+ *   - the fill and its hover keep 3:1 against the surfaces of their scheme, so a checked control
+ *     stands out on a page, a menu or a dialog: a pale colour is darkened just enough in light (its
+ *     label stays near-black), a dark one lightened just enough in dark;
+ *   - hover and pressed step away from the label colour, so they only gain contrast — or, where
+ *     that would lose the surfaces, the largest step that keeps both, so a hover always shows;
  *   - brand text and links reach 4.5:1, and icons, borders and the focus ring 3:1, on every surface
  *     of the scheme they are for, and on the brand's own tints (bg.brand.subtle, bg.selected) —
  *     a brand Badge, a ghost button's hover, a link or focus ring in a selected row;
@@ -216,6 +220,61 @@ const clears = (color: Oklch, surfaces: Oklch[], ratio: number) =>
   surfaces.every((surface) => contrast(color, surface) >= ratio);
 
 /**
+ * The surfaces a checked checkbox, radio, switch or slider sits on, menus and dialogs included: every
+ * light surface; in dark, surface.default, raised and overlay.
+ */
+const FILL_SURFACES: Record<"light" | "dark", Oklch[]> = {
+  light: SURFACES.light,
+  dark: SURFACES.dark.slice(1),
+};
+
+/** Whether a fill stands out from the scheme's surfaces at 3:1 with its label still at 4.5:1. */
+const fitsOn = (scheme: "light" | "dark", label: Oklch) => (c: Oklch) =>
+  clears(c, FILL_SURFACES[scheme], NON_TEXT) && contrast(c, label) >= TEXT;
+
+/**
+ * A fill a checked control shows: 3:1 against the surfaces it sits on, with its label still at 4.5:1,
+ * as qeet.650 does for Qeet's own dark hover. `preferred` when it already does; otherwise the nearest
+ * fill that does — darker in light, where a pale colour keeps its near-black label, and lighter in
+ * dark, where the label is white whenever a fill is that dark.
+ */
+function onSurfaces(preferred: Oklch, label: Oklch, scheme: "light" | "dark"): Oklch {
+  const fits = fitsOn(scheme, label);
+  if (fits(preferred)) return preferred;
+  const found = seek(preferred, preferred.l, scheme === "light" ? -1 : 1, fits);
+  return fits(found) ? found : preferred;
+}
+
+/**
+ * Hover or pressed: `amount` of lightness away from the label, so it only gains contrast with it.
+ *
+ * Where that step would lose the surfaces, a hover takes the largest step, up to `amount`, that keeps
+ * both the surfaces and the label — away from the label first, then towards it — so it always differs
+ * from the fill. Pressed is momentary: the whole step towards the label if that keeps both, otherwise
+ * its step away.
+ */
+function stateOf(
+  fill: Oklch,
+  label: Oklch,
+  amount: number,
+  scheme: "light" | "dark",
+  momentary: boolean,
+): Oklch {
+  const fits = fitsOn(scheme, label);
+  const away = label === WHITE ? -1 : 1;
+  const at = (delta: number) => atLightness(fill, fill.l + delta);
+  if (fits(at(amount * away))) return at(amount * away);
+  if (momentary) return fits(at(-amount * away)) ? at(-amount * away) : at(amount * away);
+  for (let step = Math.round(amount / 0.005); step >= 1; step--) {
+    for (const direction of [away, -away]) {
+      const candidate = at(step * 0.005 * direction);
+      if (fits(candidate)) return candidate;
+    }
+  }
+  return fill;
+}
+
+/**
  * Text, links, icons and lines for one scheme: as close to the brand colour as contrast allows,
  * against the scheme's surfaces and the tints derived from the brand colour itself. Links and
  * lines clear the resting tints; brand text clears every tint and neutral fill, through hover and
@@ -247,10 +306,15 @@ export function brandTheme(color: string): BrandTheme {
     if (contrast(bold, INK) >= TEXT) label = INK;
     else bold = seek(seed, seed.l, -1, (c) => contrast(c, WHITE) >= TEXT);
   }
-  // Hover and pressed move away from the label colour, so they only gain contrast with it.
-  const away = label === WHITE ? -1 : 1;
-  const hover = atLightness(bold, bold.l + 0.055 * away);
-  const pressed = atLightness(bold, bold.l + 0.11 * away);
+  // The fill and its hover must also stand out from the scheme's surfaces, for a checked control: a
+  // pale fill is darkened just enough in light, a dark one lightened just enough in dark. A fill that
+  // already clears them is unchanged. Hover and pressed step away from the label (see stateOf).
+  const lightBold = onSurfaces(bold, label, "light");
+  const hover = stateOf(lightBold, label, 0.055, "light", false);
+  const pressed = stateOf(lightBold, label, 0.11, "light", true);
+  const darkBold = onSurfaces(bold, label, "dark");
+  const darkHover = stateOf(darkBold, label, 0.055, "dark", false);
+  const darkPressed = stateOf(darkBold, label, 0.11, "dark", true);
 
   const chroma = Math.min(seed.c, QEET_PEAK_CHROMA) / QEET_PEAK_CHROMA;
   const lightSubtle = (step: keyof typeof SUBTLE_STEPS) =>
@@ -274,9 +338,6 @@ export function brandTheme(color: string): BrandTheme {
   };
 
   const shared = {
-    "--qx-color-bg-brand-bold": css(bold),
-    "--qx-color-bg-brand-bold-hover": css(hover),
-    "--qx-color-bg-brand-bold-pressed": css(pressed),
     "--qx-color-text-on-brand": css(label),
     "--qx-color-icon-on-brand": css(label),
     "--qx-color-selection": css(seed, 0.2),
@@ -287,6 +348,9 @@ export function brandTheme(color: string): BrandTheme {
   return {
     light: {
       ...shared,
+      "--qx-color-bg-brand-bold": css(lightBold),
+      "--qx-color-bg-brand-bold-hover": css(hover),
+      "--qx-color-bg-brand-bold-pressed": css(pressed),
       "--qx-color-bg-brand-subtle": css(lightSubtle(100)),
       "--qx-color-bg-brand-subtle-hover": css(lightSubtle(150)),
       "--qx-color-bg-brand-subtle-pressed": css(lightSubtle(200)),
@@ -302,6 +366,9 @@ export function brandTheme(color: string): BrandTheme {
     },
     dark: {
       ...shared,
+      "--qx-color-bg-brand-bold": css(darkBold),
+      "--qx-color-bg-brand-bold-hover": css(darkHover),
+      "--qx-color-bg-brand-bold-pressed": css(darkPressed),
       "--qx-color-bg-brand-subtle": css(darkSubtle(DARK_SUBTLE.rest)),
       "--qx-color-bg-brand-subtle-hover": css(darkSubtle(DARK_SUBTLE.hover)),
       "--qx-color-bg-brand-subtle-pressed": css(darkSubtle(DARK_SUBTLE.pressed)),

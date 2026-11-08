@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Cuts the web subsets of the two typefaces (QTRX-10): src/fonts/<Font>-<subset>.woff2 and
+Cuts the web subsets of the two typefaces: src/fonts/<Font>-<subset>.woff2 and
 src/fonts/subsets.json, which scripts/build.mjs turns into @font-face rules with unicode-range.
 
 Each font's characters are split three ways: latin (Basic Latin, Latin-1, general punctuation,

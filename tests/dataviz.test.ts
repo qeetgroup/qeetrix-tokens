@@ -57,7 +57,7 @@ describe.each(SCHEMES.map((s) => [s]))("%s", (scheme) => {
     }
   });
 
-  // QTRX-37: neighbours are the pairs a reader compares most (adjacent series, stacked parts).
+  // Neighbours are the pairs a reader compares most (adjacent series, stacked parts).
   it("keeps every neighbour well apart: ΔEok ≥ 0.15, and ≥ 0.08 under each deficiency", () => {
     for (let i = 0; i < 7; i++) {
       const [a, b] = [series[i] as Color, series[i + 1] as Color];

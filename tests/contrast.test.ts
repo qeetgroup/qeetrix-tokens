@@ -66,7 +66,7 @@ const AA_PAIRS: [string, string, number][] = [
     4.5,
   ),
   // a checked checkbox, radio, switch or slider thumb is the brand fill, at rest and hovered, on
-  // whatever surface it sits on, menus and dialogs included (QTRX-187). Pressed is momentary.
+  // whatever surface it sits on, menus and dialogs included. Pressed is momentary.
   ...pairs(["color.bg.brand.bold", "color.bg.brand.bold-hover"], SURFACES, 3),
   ...pairs(
     ["color.text.on-bold"],
@@ -107,6 +107,9 @@ const AA_PAIRS: [string, string, number][] = [
       [`color.text.${s}`, `color.bg.${s}.subtle`, 4.5],
     ],
   ),
+  // a ghost danger button pressed: its label and icon on the danger tint's pressed step
+  ["color.text.danger", "color.bg.danger.subtle-pressed", 4.5],
+  ["color.icon.danger", "color.bg.danger.subtle-pressed", 3],
   // non-text: icons, control boundaries, focus (1.4.11)
   ...pairs(
     [
@@ -214,7 +217,7 @@ describe.each(SCHEMES.map((s) => [s]))("%s", (scheme) => {
 /**
  * Rules aren't held to a WCAG minimum, but they must show. In light, border.subtle is 1.20:1 on the
  * white surfaces and border.default 1.30:1; dark held neither on surface.overlay, its lightest
- * surface, where border.subtle equalled the fill (1.00:1) and border.default was 1.10:1 (QTRX-183).
+ * surface, where border.subtle equalled the fill (1.00:1) and border.default was 1.10:1.
  */
 describe("rules and the brand hover", () => {
   const ratio = (scheme: string, fg: string, bg: string) => {
@@ -239,13 +242,13 @@ describe("rules and the brand hover", () => {
     },
   );
 
-  it("draws the dark rules one tone step apart, as light does (QTRX-183)", () => {
+  it("draws the dark rules one tone step apart, as light does", () => {
     // on overlay, raised and default: light is 1.20 and 1.30 on each
     expect(at("dark", "color.border.subtle")).toEqual(["1.22", "1.30", "1.37"]);
     expect(at("dark", "color.border.default")).toEqual(["1.42", "1.51", "1.58"]);
   });
 
-  it("keeps a hovered checked control at 3:1 on the dark overlays, with its white label (QTRX-187)", () => {
+  it("keeps a hovered checked control at 3:1 on the dark overlays, with its white label", () => {
     // qeet.700, the hover before, was 2.93, 3.11 and 3.27
     expect(at("dark", "color.bg.brand.bold-hover")).toEqual(["3.31", "3.52", "3.70"]);
     for (const scheme of SCHEMES) {

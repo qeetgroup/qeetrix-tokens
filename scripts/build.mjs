@@ -54,7 +54,7 @@ const declare = (set, ids) =>
 // The web gets subsets, cut by scripts/subset-fonts.py and listed in src/fonts/subsets.json: per
 // face a latin, a latin-ext and an "other" file, each declared with the unicode-range of exactly
 // the characters it holds, so a page downloads only what its text uses and no character pulls in
-// a whole font (QTRX-10). Qeet Sans is cut upright and italic, YTAS and SHRP pinned. The full
+// a whole font. Qeet Sans is cut upright and italic, YTAS and SHRP pinned. The full
 // variable files ship too, for other platforms. The @font-face rules open tokens.css, so the one
 // import brings the fonts. The GEOM letter style is set per role by components (each role's
 // --qx-typography-*-font-geometry), not here: Safari ignores the font-variation-settings descriptor.
