@@ -61,6 +61,11 @@ tests/                            source · contrast · dataviz · stylesheet ·
 tests/__snapshots__/tokens.css    the reviewed stylesheet — a value change shows in the PR diff
 ```
 
+## Branches
+
+Work on a branch from `develop` and open its pull request into `develop`. Only `develop` goes into `main`, through
+a `develop` → `main` pull request the maintainer opens; `main` refuses anything else.
+
 ## Rules
 
 ### 1. Strict DTCG 2025.10, validated by Terrazzo
