@@ -9,7 +9,7 @@ Colour, typography, spacing, shape, elevation, motion and density come from one 
 standard DTCG JSON and typed JavaScript for every Qeet product on web, iOS and Android.
 
 [![npm](https://img.shields.io/npm/v/@qeetrix/tokens?style=flat-square&color=111111&label=npm)](https://www.npmjs.com/package/@qeetrix/tokens)
-[![CI](https://img.shields.io/github/actions/workflow/status/qeetgroup/qeetrix-tokens/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/qeetgroup/qeetrix-tokens/actions/workflows/ci.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/qeetgroup/qeetrix-tokens/ci.yml?branch=develop&style=flat-square&label=CI)](https://github.com/qeetgroup/qeetrix-tokens/actions/workflows/ci.yml)
 ![DTCG](https://img.shields.io/badge/DTCG-2025.10-111111?style=flat-square)
 ![WCAG](https://img.shields.io/badge/WCAG_2.2-AA-2E7D32?style=flat-square)
 ![Dependencies](https://img.shields.io/badge/dependencies-0-2E7D32?style=flat-square)
@@ -719,8 +719,8 @@ platforms stack views by hierarchy.
 
 ## ✅ Quality
 
-Every pull request runs the same gate as a release: **build → typecheck → lint → test → package
-checks**.
+Every push to `develop` and every pull request into it runs the same gate as a release: **build → typecheck →
+lint → test → package checks**. `main` takes only a `develop` that passed it.
 
 | Suite | Guarantees |
 |---|---|
@@ -774,8 +774,8 @@ bun run derive          # recompute derived colours after changing a palette
 Rules, layout and what CI enforces are in [AGENTS.md](AGENTS.md). To report a vulnerability, see
 [SECURITY.md](SECURITY.md).
 
-**Releases.** Opening a pull request bumps the patch version on the branch. Merging to `main`
-publishes to npm with provenance, tags `vX.Y.Z` and opens a GitHub Release. `rollback.yml` moves
+**Releases.** Raise `version` on `develop`, then open the `develop` → `main` pull request; its Version check
+fails until the version is above `main`'s. Merging to `main` publishes to npm with provenance, tags `vX.Y.Z` and opens a GitHub Release. `rollback.yml` moves
 `latest` back to an earlier version if a release goes wrong.
 
 ## ⚖️ License

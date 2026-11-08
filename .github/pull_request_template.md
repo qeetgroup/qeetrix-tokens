@@ -4,7 +4,7 @@
 
 ## Version
 
-<!-- version.yml bumps the patch. While 0.x: a new token or output is a patch; removing or renaming
+<!-- Raise the version on develop; the Version check fails until it's above main's. While 0.x: a new token or output is a patch; removing or renaming
 a token, changing what one means, or changing an output's shape is a minor — raise it in
 package.json by hand. -->
 

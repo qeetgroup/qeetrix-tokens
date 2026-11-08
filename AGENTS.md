@@ -61,6 +61,11 @@ tests/                            source · contrast · dataviz · stylesheet ·
 tests/__snapshots__/tokens.css    the reviewed stylesheet — a value change shows in the PR diff
 ```
 
+## Branches
+
+Work on a branch from `develop` and open its pull request into `develop`. Only `develop` goes into `main`, through
+a `develop` → `main` pull request the maintainer opens; `main` refuses anything else.
+
 ## Rules
 
 ### 1. Strict DTCG 2025.10, validated by Terrazzo
@@ -106,8 +111,8 @@ purpose — review it in the PR (`bunx vitest run -u` updates it).
 
 ## Release
 
-The Qeetrix flow, as in `qeetrix-ui` and `qeetrix-icons`: `version.yml` bumps the **patch** on every
-PR; `release.yml` publishes on merge to `main`, then tags `vX.Y.Z`; `rollback.yml` moves `latest`.
+The Qeetrix flow, as in every Qeetrix repository: raise `version` on `develop` in an ordinary commit before the
+`develop` → `main` PR, whose Version check (`version.yml`) fails until it's above `main`'s; `release.yml` publishes on merge to `main`, then tags `vX.Y.Z`; `rollback.yml` moves `latest`.
 While `0.x`: a new token or output is a patch; removing or renaming a token, changing what one
 means, or changing an output's shape is a **minor** — raise it in `package.json` by hand. Write the
 `CHANGELOG.md` section in the same PR. Publishing needs an `NPM_TOKEN` secret, or npm trusted
