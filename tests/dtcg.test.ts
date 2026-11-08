@@ -47,7 +47,7 @@ describe.each(SCHEMES.map((s) => [s]))("resolved %s document", (scheme) => {
     expect(brand?.token.$value).toBe("{primitive.color.qeet.600}");
   });
 
-  it("gives every typography role its line height as a length and its letter style (QTRX-184, QTRX-186)", () => {
+  it("gives every typography role its line height as a length and its letter style", () => {
     const roles = [...authoredTokens(doc)].filter((t) => t.token.$type === "typography");
     expect(roles).toHaveLength(18);
     for (const { id, token } of roles) {

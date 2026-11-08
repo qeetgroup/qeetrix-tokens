@@ -78,7 +78,7 @@ describe("JavaScript values", () => {
       stiffness: value("motion.spring.snappy.stiffness"),
     });
     expect(m.COMPONENT.sidebar.width.expanded).toBe("16rem");
-    expect(m.COMPONENT.timeline.markerSize).toBe("28px"); // QTRX-185: a fixed size, as the CSS draws it
+    expect(m.COMPONENT.timeline.markerSize).toBe("28px"); // A fixed size, as the CSS draws it
     expect(typeof m.brandTheme).toBe("function");
     expect(m.TENANT_TOKENS).toContain(cssVariable("color.bg.brand.bold"));
   });
@@ -119,7 +119,7 @@ describe("fonts", () => {
       expect(existsSync(join(root, "dist", source(face) ?? "missing"))).toBe(true);
   });
 
-  // QTRX-10: subsets, each with the unicode-range of exactly what it holds, so a page downloads
+  // Subsets, each with the unicode-range of exactly what it holds, so a page downloads
   // only what its text uses, and no character falls through to a whole font.
   it("declares subsets with unicode ranges that never overlap, and never the whole font", () => {
     const range = (face: string) => face.match(/unicode-range:\s*([^;]+);/)?.[1] ?? "";
@@ -179,7 +179,7 @@ describe("fonts", () => {
     }
   });
 
-  it("ships the variable fonts as TrueType for Android and iOS, each pinned by its sha256 (QTRX-91)", () => {
+  it("ships the variable fonts as TrueType for Android and iOS, each pinned by its sha256", () => {
     interface NativeFont {
       family: string;
       file: string;
@@ -246,5 +246,43 @@ describe("fonts", () => {
     expect(stack("--qx-font-family-sans")).toMatch(/^"Qeet Sans",/);
     expect(stack("--qx-font-family-heading")).toMatch(/^"Qeet Sans",/);
     expect(stack("--qx-font-family-mono")).toMatch(/^"Fira Code",/);
+  });
+
+  it("has one stack for every script Qeet products ship, the generic families only at its end", () => {
+    const tokens = read("dist/tokens.css");
+    const families = (name: string) =>
+      (tokens.match(new RegExp(`${name}:\\s*([^;]+);`))?.[1] ?? "")
+        .split(",")
+        .map((f) => f.trim().replace(/"/g, ""));
+    const generics = ["ui-sans-serif", "system-ui", "sans-serif"];
+    const faces = (name: string) => families(name).filter((f) => !generics.includes(f));
+    const indic = families("--qx-font-family-indic");
+    const cjk = families("--qx-font-family-cjk");
+    expect(indic).toContain("Noto Sans Malayalam");
+    expect(indic).toContain("Noto Sans Oriya");
+    expect(cjk.slice(0, 2)).toEqual(["Noto Sans JP", "Noto Sans SC"]);
+    // Qeet Sans, then every Indian face, then Japanese and Chinese with the platforms' fonts, then the generics.
+    const text = families("--qx-font-family-text");
+    expect(text).toEqual([
+      "Qeet Sans",
+      ...faces("--qx-font-family-indic"),
+      ...faces("--qx-font-family-cjk"),
+      ...generics,
+    ]);
+    for (const name of [
+      "--qx-font-family-text",
+      "--qx-font-family-indic",
+      "--qx-font-family-cjk",
+    ]) {
+      const stack = families(name);
+      expect(stack.slice(-3), name).toEqual(generics);
+      expect(
+        stack.slice(0, -3).some((f) => generics.includes(f)),
+        name,
+      ).toBe(false);
+    }
+    // Additive: sans and heading, and with them every role, stay Qeet Sans's own stack.
+    expect(families("--qx-font-family-sans")).toEqual(["Qeet Sans", ...generics]);
+    expect(families("--qx-typography-body-md-font-family")).toEqual(["Qeet Sans", ...generics]);
   });
 });

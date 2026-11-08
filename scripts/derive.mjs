@@ -8,7 +8,7 @@
  * A typography role's lineHeight is one too. DTCG makes it a ratio of the font size, but the decision
  * is a length on the 4px grid ($extensions["in.qeet.qeetrix"].lineHeight), so the ratio is that
  * length divided by the font size, written at full precision: fontSize × lineHeight is then exactly
- * the length (QTRX-184), where a ratio rounded to 4 decimals gave 20.0004px.
+ * the length, where a ratio rounded to 4 decimals gave 20.0004px.
  *
  * tests/source.test.ts fails when a value no longer matches its recipe; this script rewrites them.
  * Run it after changing a primitive the recipes use:

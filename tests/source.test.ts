@@ -240,7 +240,7 @@ describe("typography", () => {
     t.$extensions?.[EXTENSION] as { fontGeometry?: string; lineHeight?: Length } | undefined;
   const px = ({ value, unit }: Length) => (unit === "rem" ? value * 16 : value);
 
-  // QTRX-184. DTCG requires lineHeight to be a ratio; the decision is the length beside it.
+  // DTCG requires lineHeight to be a ratio; the decision is the length beside it.
   it("lands every line height exactly on the 4px grid, in double and single precision", () => {
     expect(roles).toHaveLength(18);
     for (const t of roles) {
@@ -257,7 +257,7 @@ describe("typography", () => {
     }
   });
 
-  // QTRX-186. The role-to-GEOM pairing of design rules §5, as data.
+  // The role-to-GEOM pairing of design rules §5, as data.
   it("names each role's letter style, a font.geometry token, as design rules §5 pairs them", () => {
     const geometry: Record<string, string> = {
       display: "display",

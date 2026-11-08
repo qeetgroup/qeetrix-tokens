@@ -171,7 +171,9 @@ import "@qeetrix/tokens/tokens.css";
 <html data-qx-color-scheme="dark" data-qx-density="compact">
 ```
 
-Using Tailwind CSS v4? `@qeetrix/react` will ship the full Tailwind mapping. Until then, use the
+Using Tailwind CSS v4? Import `@qeetrix/react/tailwind.css` after Tailwind for utilities named after
+these tokens — `bg-surface-raised`, `rounded-control`, `p-inset-md`, `typography-body-md` — as the
+`@qeetrix/react` README's Tailwind section shows. Until a release ships it, use the
 variables directly: `bg-(--qx-color-surface-raised)`.
 
 ## 🌗 Colour scheme and density
@@ -276,7 +278,7 @@ interactive ones also have `-hover` and `-pressed` states.
 
 | Group | Tokens (after `--qx-color-`) |
 |---|---|
-| Fills | `bg-neutral-subtle` `-hover` `-pressed` · `bg-neutral-bold` `-hover` `-pressed` · `bg-brand-subtle` `-hover` `-pressed` · `bg-brand-bold` `-hover` `-pressed` · `bg-danger-subtle` · `bg-danger-bold` `-hover` `-pressed` · `bg-success-subtle` · `bg-success-bold` · `bg-warning-subtle` · `bg-warning-bold` · `bg-info-subtle` · `bg-info-bold` · `bg-selected` `-hover` · `bg-disabled` · `bg-input` |
+| Fills | `bg-neutral-subtle` `-hover` `-pressed` · `bg-neutral-bold` `-hover` `-pressed` · `bg-brand-subtle` `-hover` `-pressed` · `bg-brand-bold` `-hover` `-pressed` · `bg-danger-subtle` `-pressed` · `bg-danger-bold` `-hover` `-pressed` · `bg-success-subtle` · `bg-success-bold` · `bg-warning-subtle` · `bg-warning-bold` · `bg-info-subtle` · `bg-info-bold` · `bg-selected` `-hover` · `bg-disabled` · `bg-input` |
 | Text | `text-default` · `text-subtle` · `text-subtlest` · `text-disabled` · `text-inverse` · `text-brand` · `text-link` `-hover` · `text-danger` · `text-success` · `text-warning` · `text-info` · `text-on-bold` · `text-on-brand` · `text-on-warning` |
 | Icons | `icon-default` · `icon-subtle` · `icon-disabled` · `icon-inverse` · `icon-brand` · `icon-danger` · `icon-success` · `icon-warning` · `icon-info` · `icon-highlight` · `icon-on-bold` · `icon-on-brand` |
 | Borders | `border-default` · `border-subtle` · `border-strong` `-hover` · `border-disabled` · `border-focus` · `border-selected` · `border-brand` · `border-danger` · `border-success` · `border-warning` · `border-info` |
@@ -326,7 +328,29 @@ axis sets the letterforms for each role, in `-font-geometry`:
 - body, labels and code use A11y, the most legible forms (`--qx-font-geometry-body`, 0). Fira
   Code has no GEOM axis and ignores it.
 
-`--qx-font-family-indic` is a Noto stack for Indian scripts.
+#### Text in every language
+
+| Token | Families | For |
+|---|---|---|
+| `--qx-font-family-text` | Qeet Sans, every script's face below, the platforms' Japanese and Chinese fonts, then the generic families | Text in any language a Qeet product ships: **use this one for multilingual text** |
+| `--qx-font-family-indic` | Noto Sans and its Devanagari, Bengali, Tamil, Telugu, Kannada, Gujarati, Gurmukhi, Malayalam and Odia faces | Indian scripts on their own |
+| `--qx-font-family-cjk` | Noto Sans JP, Noto Sans SC, then Hiragino Sans, PingFang SC, Yu Gothic UI and Microsoft YaHei UI | Japanese and Chinese on their own |
+
+Don't chain stacks (`var(--qx-font-family-sans), var(--qx-font-family-indic)`): each ends in the
+generic families, so the system font would come before the Indian faces. `--qx-font-family-text` has
+the generics only at its end. The typography roles keep Qeet Sans's own stack; to set a role in the
+multilingual one, give its family after the shorthand:
+
+```css
+.message {
+  font: var(--qx-typography-body-md);
+  font-family: var(--qx-font-family-text);
+}
+```
+
+The stacks name the faces; the app loads them (Google Fonts serves every Noto face listed). Japanese
+comes before Chinese, so a page in Chinese should put Noto Sans SC first under `:lang(zh)`: the same
+characters are drawn differently in each.
 
 ### Space
 
@@ -566,12 +590,19 @@ Put `css` in a `<style>` element. To set a single element instead, use
   `TypeError` for anything else. Every value it returns is a colour it computed itself, so the
   output is safe to put in a style element.
 
-**Known gap:** the brand fill against the surface, the 3:1 a checked checkbox, radio or switch
-needs, isn't guaranteed yet for a tenant's colour. Qeet's own tokens meet it in both schemes:
-since 0.0.13 the dark hover is qeet.650, 3.31:1 on `surface-overlay` (QTRX-187). `brandTheme()`
-still makes the hover the fill darkened by 0.055 lightness in both schemes, so in dark a hovered
-checked control can fall under 3:1 on an overlay: `brandTheme("#d04800")` gives 2.92:1. A fill too
-dark for the dark surfaces isn't caught either.
+**The checked fill**: a checked checkbox, radio, switch or slider is the brand fill, at rest and
+hovered, so `brandTheme()` keeps both at 3:1 on the surfaces they sit on, with the label still at
+4.5:1, as Qeet's own qeet.650 hover does in dark: every light surface, and `surface-default`,
+`-raised` and `-overlay` in dark.
+
+- **Light:** a pale colour that takes the near-black label (a pale pink, a peach) is darkened just
+  enough to reach 3:1 on white. It keeps its hue and its near-black label; dark keeps the tenant's
+  own colour, which already stands out there.
+- **Dark:** a fill too dark for the dark surfaces is lightened just enough.
+- **Hover and pressed** step away from the label. Where that would lose the surfaces, the hover
+  takes the largest step that keeps both the surfaces and the label, so it always shows; pressed is
+  momentary and takes its whole step, towards the label when that keeps both.
+- A fill that already clears the surfaces is unchanged, Qeet's own included.
 
 ## ⚡ JavaScript
 

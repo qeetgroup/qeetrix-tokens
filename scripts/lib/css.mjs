@@ -47,7 +47,7 @@ export const cssVariable = (id) => `--qx-${id.replaceAll(".", "-")}`;
 
 /**
  * A typography role's line height, the ratio of its line height length to its font size
- * (scripts/derive.mjs), rounded *up* at the sixth decimal: 20/14 is written 1.428572 (QTRX-184).
+ * (scripts/derive.mjs), rounded *up* at the sixth decimal: 20/14 is written 1.428572.
  * Browsers truncate a line box to a fraction of a pixel (1/64 in Chromium and WebKit), and WebKit
  * computes a unitless line height in single precision, so a ratio a hair under the exact one lays
  * out 1/64px short, 15.984375px for 16: 4-decimal rounding (1.3333) did in Chromium and WebKit, and

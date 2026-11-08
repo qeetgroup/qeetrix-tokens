@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Writes the native fonts (QTRX-91): src/fonts/QeetSans.ttf and src/fonts/FiraCode-VF.ttf, the full
+Writes the native fonts: src/fonts/QeetSans.ttf and src/fonts/FiraCode-VF.ttf, the full
 variable fonts as TrueType, for Android (res/font, Compose FontFamily) and iOS (Core Text), which
 load TTF or OTF but not WOFF2; and src/fonts/native.json, each file's axes, size and sha256, with
 the sha256 of the WOFF2 it came from and the fontTools that made it.

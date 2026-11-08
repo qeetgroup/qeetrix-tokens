@@ -161,6 +161,100 @@ describe("any tenant colour", () => {
   });
 });
 
+/**
+ * A checked checkbox, radio, switch or slider is the brand fill, at rest and hovered, on whatever surface
+ * it sits on: 3:1 on every light surface, and in dark on surface.default, raised and overlay, its label
+ * still 4.5:1.
+ */
+describe("the checked fill", () => {
+  const seeds = [...Array(18).keys()].flatMap((i) =>
+    [0.3, 0.45, 0.6, 0.75, 0.9].flatMap((l) =>
+      [0.06, 0.2].map(
+        (c) => formatHex(clampChroma({ mode: "oklch", l, c, h: i * 20 }, "oklch")) as string,
+      ),
+    ),
+  );
+  const surfaces = {
+    light: ["canvas", "default", "raised", "overlay"].map((s) =>
+      toCulori(light[`color.surface.${s}`]?.$value as DtcgColor),
+    ),
+    dark: ["default", "raised", "overlay"].map((s) =>
+      toCulori(dark[`color.surface.${s}`]?.$value as DtcgColor),
+    ),
+  };
+  const oklch = (value: string) => {
+    const { l, h } = converter("oklch")(parse(value) as Color);
+    return { l: l as number, h: h as number };
+  };
+
+  it.each(["light", "dark"] as const)(
+    "stands out from the %s surfaces at rest and hovered, for every seed",
+    (scheme) => {
+      const failures: string[] = [];
+      for (const seed of [...seeds, "#d04800"]) {
+        const t = brandTheme(seed)[scheme];
+        const label = parse(t["--qx-color-text-on-brand"]) as Color;
+        for (const fill of [
+          "--qx-color-bg-brand-bold",
+          "--qx-color-bg-brand-bold-hover",
+        ] as const) {
+          const colour = parse(t[fill]) as Color;
+          for (const [index, surface] of surfaces[scheme].entries()) {
+            const ratio = wcagContrast(colour, surface);
+            if (ratio < 3)
+              failures.push(`${seed} ${fill} on surface ${index + 1}: ${ratio.toFixed(2)}`);
+          }
+          const text = wcagContrast(label, colour);
+          if (text < 4.5) failures.push(`${seed} label on ${fill}: ${text.toFixed(2)}`);
+        }
+      }
+      expect(failures).toEqual([]);
+    },
+  );
+
+  it("darkens a pale colour just enough in light, keeping its hue and its near-black label", () => {
+    // A pale pink: under 3:1 on white as it is.
+    const seed = "#f4b6c8";
+    const { light: l, dark: d } = brandTheme(seed);
+    const fill = oklch(l["--qx-color-bg-brand-bold"]);
+    expect(fill.l).toBeLessThan(oklch(seed).l);
+    expect(Math.abs(fill.h - oklch(seed).h)).toBeLessThan(1);
+    expect(wcagContrast(parse(l["--qx-color-bg-brand-bold"]) as Color, "#ffffff")).toBeLessThan(
+      3.2,
+    );
+    expect(oklch(l["--qx-color-text-on-brand"]).l).toBeLessThan(0.2);
+    // Dark keeps the tenant's own colour: it already stands out there.
+    expect(oklch(d["--qx-color-bg-brand-bold"]).l).toBeCloseTo(oklch(seed).l, 3);
+  });
+
+  it.each(["light", "dark"] as const)(
+    "gives every seed a hover and a pressed state that differ from the fill, in %s",
+    (scheme) => {
+      const same: string[] = [];
+      for (const seed of [...seeds, "#d04800"]) {
+        const t = brandTheme(seed)[scheme];
+        const rest = oklch(t["--qx-color-bg-brand-bold"]).l;
+        for (const state of [
+          "--qx-color-bg-brand-bold-hover",
+          "--qx-color-bg-brand-bold-pressed",
+        ] as const) {
+          if (Math.abs(oklch(t[state]).l - rest) < 0.004) same.push(`${seed} ${state}`);
+        }
+      }
+      expect(same).toEqual([]);
+    },
+  );
+
+  it("keeps Qeet's own fill and gives it a hover that is still a step darker", () => {
+    const { light: l, dark: d } = brandTheme("#d04800");
+    expect(d["--qx-color-bg-brand-bold"]).toBe(l["--qx-color-bg-brand-bold"]);
+    const lightness = (value: string) => converter("oklch")(parse(value) as Color).l as number;
+    expect(lightness(d["--qx-color-bg-brand-bold-hover"])).toBeLessThan(
+      lightness(d["--qx-color-bg-brand-bold"]),
+    );
+  });
+});
+
 /** Brand marks on the brand's own tints: a brand Badge, a ghost button's hover, a selected row. */
 const TINTS = ["--qx-color-bg-brand-subtle", "--qx-color-bg-selected"] as const;
 /** Brand text, also through the tints' states: a ghost button hovered and pressed. */
