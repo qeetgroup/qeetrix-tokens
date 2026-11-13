@@ -1,18 +1,19 @@
 name: CI
 
+# Verify, once per change: on every pull request into develop (Dependabot's, a contributor's) and on the
+# develop → main pull request, which is what main takes. Pushes run nothing, so no commit is checked twice.
+#
+# Verify is the quick gate: install, types, Biome (format and lint) and a dependency audit. The build, the test
+# suites (DTCG validity, naming and layering, WCAG contrast, the chart palette, the stylesheet snapshot) and the
+# package check run locally before pushing (AGENTS.md, "Before you push"); the release builds and checks the
+# package again before it publishes.
 on:
-  # On develop only: every push to it, and every pull request into it (Dependabot's). A develop → main pull request
-  # is checked by develop's run on the same commit, and main isn't checked again after the merge: main requires
-  # this check on an up-to-date branch, so what's merged is exactly what passed here.
-  push:
-    branches: [develop]
   pull_request:
-    branches: [develop]
-  # By hand, on any branch.
+    branches: [develop, main]
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -38,12 +39,8 @@ jobs:
         with:
           node-version: 24
       - run: bun install --frozen-lockfile
-      # `build` comes first, so every step after it checks what was just built.
-      - run: bun run build
       - run: bun run typecheck
-      - run: bun run lint
-      # DTCG validity (Terrazzo), naming and layering, WCAG contrast, chart palette, stylesheet,
-      # published DTCG, brandTheme(), package contract and the stylesheet snapshot.
-      - run: bun run test
-      # publint + arethetypeswrong against the packed tarball consumers install.
-      - run: bun run check:package
+      - name: format and lint (Biome)
+        run: bun run lint
+      - name: dependency audit
+        run: bun audit

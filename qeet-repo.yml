@@ -73,12 +73,13 @@ commands:
   next_version: node scripts/npm-versions.mjs next <version>   # skips versions npm has burned
 
 ci:
-  workflows: [ci.yml, version.yml, release.yml, rollback.yml]
-  job: verify                 # build, typecheck, lint, test, check:package
-  versioning: "version.yml bumps PATCH on every PR unless package.json was raised by hand"
-  release: "push main -> gate (same as CI) -> npm publish (provenance) -> tag vX.Y.Z + GitHub release"
+  workflows: [ci.yml, release-gate.yml, release.yml, sync-develop.yml, rollback.yml]
+  verify: "pull requests into develop or main: typecheck, Biome, bun audit"
+  release_gate: "develop → main pull request: from develop, version raised when what ships changed"
+  local_gate: "build, typecheck, lint, test, check:package before every push (AGENTS.md)"
+  release: "push main -> build + check:package -> npm publish (provenance) -> tag vX.Y.Z + GitHub release"
   rollback: "rollback.yml moves the latest dist-tag"
-  dependency_updates: .github/dependabot.yml (bun, github-actions; 3-day cooldown)
+  dependency_updates: .github/dependabot.yml (bun, github-actions; monthly, 3-day cooldown)
   actions_pinned_to_sha: true
 
 tests:

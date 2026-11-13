@@ -41,8 +41,19 @@ bun run test:watch
 bun run check:package   # publint + arethetypeswrong on the packed tarball
 ```
 
-CI (`.github/workflows/ci.yml`) runs `build → typecheck → lint → test → check:package`;
-`release.yml` runs the same before publishing.
+CI checks each change once, on its pull request (every pull request into `develop`, and the `develop` → `main`
+pull request); pushes run nothing. **Verify** (`ci.yml`) runs `typecheck → lint → bun audit`; the **Release
+gate** (`release-gate.yml`) checks the `develop` → `main` pull request comes from `develop` with the version raised;
+`release.yml` builds and runs `check:package` before publishing.
+
+### Before you push
+
+The build, the tests and the package check don't run in CI. Run them all before every push and say so in the
+commit:
+
+```bash
+bun run build && bun run typecheck && bun run lint && bun run test && bun run check:package && bun audit
+```
 
 ## Layout
 
@@ -112,7 +123,8 @@ purpose — review it in the PR (`bunx vitest run -u` updates it).
 ## Release
 
 The Qeetrix flow, as in every Qeetrix repository: raise `version` on `develop` in an ordinary commit before the
-`develop` → `main` PR, whose Version check (`version.yml`) fails until it's above `main`'s; `release.yml` publishes on merge to `main`, then tags `vX.Y.Z`; `rollback.yml` moves `latest`.
+`develop` → `main` PR, whose Release gate (`release-gate.yml`) fails until it's above `main`'s (only a change to what
+builds `dist/` needs one); `release.yml` publishes on merge to `main`, then tags `vX.Y.Z`; `rollback.yml` moves `latest`.
 While `0.x`: a new token or output is a patch; removing or renaming a token, changing what one
 means, or changing an output's shape is a **minor** — raise it in `package.json` by hand. Write the
 `CHANGELOG.md` section in the same PR. Publishing needs an `NPM_TOKEN` secret, or npm trusted

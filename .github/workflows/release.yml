@@ -7,11 +7,11 @@ name: Release
 # The flow end to end:
 #
 #   1. Raise the version in package.json on develop (the next patch, or a minor or major), then
-#      open the develop → main PR; its Version check fails until it's raised. The version you are
+#      open the develop → main PR; its Release gate fails until it's raised. The version you are
 #      about to ship is in the PR diff.
-#   2. Merge to main. This workflow builds the package (every gate already passed in develop's
-#      CI on this commit), publishes that version to npm, pushes the matching `vX.Y.Z`
-#      tag, and opens a GitHub Release.
+#   2. Merge to main. This workflow builds and checks the package (Verify passed on the pull
+#      request, and the tests ran locally before the push), publishes that version to npm,
+#      pushes the matching `vX.Y.Z` tag, and opens a GitHub Release.
 #   3. Bad release? Run `rollback.yml` — it points `latest` back at an older version. npm will not
 #      let a version be republished, so a rollback moves the tag rather than replacing the package.
 #
@@ -84,9 +84,8 @@ jobs:
             echo "release=true" >> "$GITHUB_OUTPUT"
           fi
 
-      # develop's CI already passed every gate on this commit (main takes develop only, on an up-to-date
-      # branch), so they don't run again here. Only the package is built and checked, as it's
-      # published. Nothing below runs if the version is unchanged.
+      # Verify passed on the develop → main pull request, so it doesn't run again here. Only the package
+      # is built and checked, as it's published. Nothing below runs if the version is unchanged.
       - if: steps.version.outputs.release == 'true'
         run: bun run build
       - if: steps.version.outputs.release == 'true'
